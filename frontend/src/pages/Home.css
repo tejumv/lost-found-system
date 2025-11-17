@@ -1,0 +1,294 @@
+/* --- Google Font Import for Attractive Font (Montserrat) --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+
+/* --- Global Styles & Variables --- */
+:root {
+  --primary-dark: #0f1c37; 
+  --secondary-dark: #1f3762;
+  --highlight-blue: #34d0f6;
+  --text-light: #ffffff;
+  --text-faded: #a0b0c9;
+  
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif; 
+  color: var(--text-light);
+  background-color: var(--primary-dark);
+  overflow-x: hidden; 
+}
+
+/* --- Home Container & Background --- */
+.home-container {
+  min-height: 100vh;
+  position: relative;
+  /* ACTION: Ensure 'placeholder-university-building.jpg' is a real image path or replace it */
+  background-image: url('C:\Users\Lenovo\lost-found-system\frontend\src\pages\Gemini_Generated_Image_5rvhnd5rvhnd5rvh.png'); 
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+}
+
+/* REVISED: Background Overlay for more clarity */
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Reduced opacity from 0.95 to 0.85 (you can adjust this value) */
+  background: rgba(15, 28, 55, 0.65); 
+  z-index: 1; 
+}
+
+/* --- Top Bar (MINIMAL HEADER, NO NAV BAR) --- */
+.top-bar {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem; 
+}
+
+/* --- Left Top: Logo Placeholder --- */
+.clg-logo-placeholder {
+  /* This container helps control the size of your logo */
+  width: 150px; /* Adjust as needed */
+  height: 40px; /* Adjust as needed */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* NEW: Styling for the actual logo image */
+.logo-image {
+    max-width: 100%; /* Ensures image doesn't overflow its container */
+    max-height: 100%; /* Ensures image doesn't overflow its container */
+    width: auto; /* Maintains aspect ratio */
+    height: auto; /* Maintains aspect ratio */
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5)); /* Subtle shadow for contrast */
+    /* Remove any old text placeholders if they exist from previous versions */
+    display: block; /* Ensure it behaves like a block element */
+}
+
+
+/* --- Right Top: Utility Icons --- */
+.utility-icons {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.theme-selector {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.theme-selector:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-text {
+  font-size: 1.1rem; 
+  color: var(--text-faded);
+  font-weight: 400;
+}
+
+.settings-placeholder {
+  cursor: pointer;
+  position: relative;
+  width: 2.2rem; 
+  height: 2.2rem; 
+  transition: color 0.3s ease;
+}
+
+.settings-placeholder::before {
+    content: '\2699'; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 2.2rem; 
+    color: var(--text-faded);
+    line-height: 1;
+}
+
+.settings-placeholder:hover::before {
+  color: var(--text-light);
+}
+
+
+/* --- Main Content Layout (SINGLE COLUMN & CENTERED) --- */
+.main-content-single-column {
+  position: relative;
+  z-index: 5;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 2.5rem;
+}
+
+.center-content-block {
+    max-width: 750px; 
+    width: 100%;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* --- Content Styling --- */
+
+.main-title {
+  font-size: 3.8rem;
+  font-weight: 900;
+  color: var(--text-light);
+  margin: 0 0 1rem 0;
+  letter-spacing: -1px; 
+}
+
+.sub-description {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--text-faded);
+  line-height: 1.5;
+  margin: 0 auto 3rem auto; 
+}
+
+
+/* --- Get Started Card (Interactive Styling) --- */
+.center-card {
+    margin: 0 auto; 
+    max-width: 450px; 
+}
+
+.get-started-card {
+  background: var(--secondary-dark);
+  padding: 2.5rem;
+  border-radius: 1.25rem; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  text-align: left; 
+  
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+}
+
+/* Card Expansion on Hover */
+.get-started-card:hover {
+    transform: scale(1.02); 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px var(--highlight-blue); 
+}
+
+
+.get-started-card > * {
+    position: relative; 
+    z-index: 1;
+}
+
+.get-started-card h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+
+.card-description {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-faded);
+  margin-bottom: 2.5rem;
+  line-height: 1.4;
+}
+
+/* --- Buttons --- */
+.login-button,
+.create-account-button {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: none;
+  border-radius: 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.login-button {
+  background: linear-gradient(90deg, #34d0f6, #0a99e6);
+  color: var(--primary-dark);
+  box-shadow: 0 4px 15px rgba(52, 208, 246, 0.5);
+}
+
+.login-button:hover {
+  opacity: 0.9;
+}
+
+.create-account-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* --- Responsive Layout --- */
+
+@media (max-width: 768px) {
+    .top-bar {
+        padding: 0.8rem 1.25rem;
+    }
+    
+    .main-content-single-column {
+        padding: 2rem 1.25rem 3rem;
+    }
+
+    .main-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .sub-description {
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
+    }
+    
+    .utility-icons {
+        gap: 1rem;
+    }
+    
+    .theme-text {
+        font-size: 1rem; 
+    }
+    
+    .settings-placeholder::before {
+        font-size: 1.8rem; 
+    }
+    
+    .clg-logo-placeholder {
+        width: 120px;
+        height: 30px;
+    }
+    
+    .get-started-card {
+        padding: 1.5rem;
+    }
+    
+    .get-started-card h2 {
+        font-size: 1.5rem;
+    }
+    
+    .login-button, .create-account-button {
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+    }
+}
