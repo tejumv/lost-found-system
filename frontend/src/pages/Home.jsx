@@ -1,71 +1,183 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; 
 import './Home.css';
+import logoImage from '../assets/logo.png'; 
 
 const Home = () => {
-  return (
-    <div className="home-container">
-      {/* Background Overlay */}
-      <div className="background-overlay"></div>
+    const navigate = useNavigate();
+    // Theme State: Controls the current theme ('dark' or 'light'). Default to 'dark'.
+    const [theme, setTheme] = useState('dark'); 
+    
+    // UI State: Controls the visibility of the theme menu dropdown
+    const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+    
+    // NEW STATE: Controls the visibility of the settings menu dropdown
+    const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
 
-      {/* Top Bar with Logo, Theme, and Settings */}
-      <div className="top-bar">
-        {/* Left Top: Logo Placeholder */}
-        <div className="clg-logo-placeholder">
-          {/* ACTION REQUIRED: 
-            Replace "YOUR_LOGO_IMAGE_PATH_HERE.png" with the actual path 
-            to your college logo image file. 
-            
-            Example if your logo is in 'public/logo.png': src="/logo.png"
-            Example if your logo is in 'src/assets/logo.png' and Home.jsx is in 'src/pages': src="../assets/logo.png"
-          */}
-          <img 
-            src="src\pages\idRhhe7nrF_1763398090675.png" // <--- **UPDATE THIS PATH**
-            alt="KLE Tech Logo" 
-            className="logo-image" 
-          />
-        </div>
+    // Toggles the theme menu visibility
+    const toggleThemeMenu = () => {
+        // Close settings menu if open
+        setIsSettingsMenuOpen(false);
+        setIsThemeMenuOpen(prev => !prev);
+    };
 
-        {/* Right Top: Utility Icons */}
-        <div className="utility-icons">
-          {/* Placeholder for Theme Selector (Light/Dark/Custom) */}
-          <div className="theme-selector" title="Theme">
-            <span className="theme-text">Theme</span>
-          </div>
+    // NEW HANDLER: Toggles the settings menu visibility
+    const toggleSettingsMenu = () => {
+        // Close theme menu if open
+        setIsThemeMenuOpen(false);
+        setIsSettingsMenuOpen(prev => !prev);
+    };
+    
+    // Handler for selecting a theme
+    const selectTheme = (themeName) => {
+        setTheme(themeName);
+        setIsThemeMenuOpen(false); // Close the menu after selection
+    };
+    
+    // Handler for selecting a settings option
+    const handleSettingsClick = (option) => {
+        // Use useNavigate for routing
+        if (option === 'Help') {
+            // Assuming you create a /contact route for Help & Support
+            navigate('/contact');
+        } else {
+            console.log(`Settings option selected: ${option}`);
+        }
+        setIsSettingsMenuOpen(false); // Close the menu after selection
+    };
 
-          {/* Settings Icon Placeholder */}
-          <div className="settings-placeholder" title="Settings"></div>
-        </div>
-      </div>
+    // Use a variable to apply the theme class to the container
+    const containerClass = `home-container theme-${theme}`;
 
-      {/* Main Content Area (Single column and centered) */}
-      <main className="main-content-single-column">
-        
-        {/* Main Content Block (Centered) */}
-        <div className="center-content-block">
-            {/* Title */}
-            <h1 className="main-title">Lost and Found System</h1>
+    return (
+        <div className={containerClass}>
+            {/* Background Overlay */}
+            <div className="background-overlay"></div>
 
-            {/* Sub-Description */}
-            <p className="sub-description">
-                An advanced platform for efficiently managing and recovering lost and found items 
-                within KLE Technological University, ensuring a secure and streamlined process.
-            </p>
+            {/* Top Bar with Logo, Theme, and Settings */}
+            <div className="top-bar">
+                {/* Left Top: Logo Placeholder */}
+                <div className="clg-logo-placeholder">
+                    <img 
+                        src={logoImage} 
+                        alt="KLE Tech Logo" 
+                        className="logo-image" 
+                    />
+                </div>
 
-            {/* Get Started Card (Moved to the center below the description) */}
-            <div className="get-started-card center-card">
-                <h2>Get Started</h2>
-                <p className="card-description">
-                    Access the Lost & Found dashboard to manage your reports, track items, and
-                    securely claim your property with ease.
-                </p>
-                {/* Action Buttons */}
-                <button className="login-button">Search for an Item</button>
-                <button className="create-account-button">Report a Lost Item</button>
+                {/* Right Top: Utility Icons */}
+                <div className="utility-icons">
+                    
+                    {/* THEME SELECTOR WITH DROPDOWN */}
+                    <div 
+                        className="theme-selector" 
+                        title="Theme"
+                        onClick={toggleThemeMenu}
+                    >
+                        <span className="theme-text">Theme: {theme.charAt(0).toUpperCase() + theme.slice(1)}</span>
+                        
+                        {/* Theme Dropdown Menu */}
+                        {isThemeMenuOpen && (
+                            <div className="theme-dropdown-menu">
+                                <div 
+                                    className="theme-option" 
+                                    onClick={(e) => { e.stopPropagation(); selectTheme('light'); }}
+                                >
+                                    Light
+                                </div>
+                                <div 
+                                    className="theme-option" 
+                                    onClick={(e) => { e.stopPropagation(); selectTheme('dark'); }}
+                                >
+                                    Dark
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    {/* END THEME SELECTOR */}
+
+                    {/* SETTINGS ICON WITH DROPDOWN */}
+                    <div 
+                        className="settings-placeholder" 
+                        title="Settings"
+                        onClick={toggleSettingsMenu}
+                    >
+                         {/* Gear Icon (Placeholder for the actual icon) */}
+                        <span className="settings-icon"></span>
+                        
+                        {/* Settings Dropdown Menu */}
+                        {isSettingsMenuOpen && (
+                            <div className="settings-dropdown-menu">
+                                <div 
+                                    className="settings-option" 
+                                    onClick={(e) => { e.stopPropagation(); handleSettingsClick('Profile'); }}
+                                >
+                                    Account Profile
+                                </div>
+                                <div 
+                                    className="settings-option" 
+                                    onClick={(e) => { e.stopPropagation(); handleSettingsClick('Language'); }}
+                                >
+                                    Language
+                                </div>
+                                <div 
+                                    className="settings-option" 
+                                    onClick={(e) => { e.stopPropagation(); handleSettingsClick('Accessibility'); }}
+                                >
+                                    Accessibility
+                                </div>
+                                {/* 🌟 HELP & SUPPORT OPTION */}
+                                <div 
+                                    className="settings-option" 
+                                    onClick={(e) => { e.stopPropagation(); handleSettingsClick('Help'); }}
+                                >
+                                    Help & Support
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    {/* END SETTINGS ICON */}
+                </div>
             </div>
+
+            {/* Main Content Area (Single column and centered) */}
+            <main className="main-content-single-column">
+                
+                {/* Main Content Block (Centered) */}
+                <div className="center-content-block">
+                    {/* Title */}
+                    <h1 className="main-title">Lost and Found System</h1>
+
+                    {/* Sub-Description */}
+                    <p className="sub-description">
+                        An advanced platform for efficiently managing and recovering lost and found items 
+                        within KLE Technological University, ensuring a secure and streamlined process.
+                    </p>
+
+                    {/* Get Started Card */}
+                    <div className="get-started-card center-card">
+                        <h2>Account Access</h2> {/* Updated Card Title */}
+                        <p className="card-description">
+                            Please log in or create an account to manage your lost/found reports and track
+                            the status of items within the system.
+                        </p>
+                        
+                        {/* Action Buttons: NOW USING LOGIN/CREATE ACCOUNT */}
+
+                        {/* 1. Login Button -> /login */}
+                        <Link to="/login" className="link-button-wrapper">
+                            <button className="login-button">Log In</button>
+                        </Link>
+
+                        {/* 2. Create Account Button -> /login (Assuming /login handles both) */}
+                        <Link to="/login" className="link-button-wrapper">
+                           <button className="create-account-button">Create Account</button>
+                        </Link>
+                    </div>
+                </div>
+            </main>
         </div>
-      </main>
-    </div>
-  );
+    );
 };
 
 export default Home;

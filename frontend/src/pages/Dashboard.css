@@ -1,0 +1,145 @@
+.dashboard-container {
+  margin-top: 40px;     /* Move content up */
+  padding-bottom: 80px; /* Space before footer */
+  min-height: 80vh;     /* Ensures footer stays at bottom */
+}
+
+.dash-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 60px 80px;
+  background: linear-gradient(120deg, #f6f3f3, #faf6f6);
+  overflow: hidden;
+}
+
+.dash-content {
+  max-width: 500px;
+}
+
+.dash-title {
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 5px;
+  color: #222;
+}
+
+.dash-title span {
+  color: #050231;
+}
+
+.dash-sub {
+  font-size: 18px;
+  margin-bottom: 35px;
+  color: #333;
+}
+
+.dash-buttons {
+  display: flex;
+  gap: 18px;
+}
+
+.btn-lost,
+.btn-found {
+  padding: 16px 34px;
+  font-size: 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  color: rgb(255, 255, 255);
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+/* Button colors */
+.btn-lost {
+  background-color: #041d45;
+}
+
+.btn-found {
+  background-color: #7aa9c6;
+}
+
+/* Hover effect */
+.btn-lost:hover {
+  background-color: #294884;
+}
+
+.btn-found:hover {
+  background-color: #05226b;
+}
+
+/* Active press effect */
+.btn-lost:active,
+.btn-found:active {
+  transform: scale(0.96);
+}
+.dash-cards {
+  display: flex;
+  flex-direction: row;   /* one below another */
+  gap: 170px;
+}
+
+.dash-card {
+  width: 260px;
+  background: rgba(13, 7, 85, 0.45); /* dark glass effect */
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  padding: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.dash-card:hover {
+  transform: translateY(-5px) scale(1.03);
+}
+
+.dash-card img {
+  width: 220px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.dash-card p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.dash-images {
+  display: flex;
+  gap: 15px;
+}
+
+.dash-images img {
+  width: 180px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.18);
+  transition: transform 0.3s ease;
+}
+
+.dash-images img:hover {
+  transform: translateY(-6px);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dash-wrapper {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .dash-images {
+    margin-top: 30px;
+  }
+}
