@@ -1,0 +1,125 @@
+/* Background image chosen by you */
+.login-page {
+  background: url("kletechbvb_cover.jpeg") no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", sans-serif;
+  
+  background-color: #f0f0f5; 
+  /* === ADDED FOR ABSOLUTE POSITIONING OF LOGO === */
+  position: relative; 
+  /* ============================================== */
+}
+
+/* Light theme overlay adjustment */
+.login-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.4); 
+    z-index: 0;
+}
+
+/* === LOGO STYLES - NOW POSITIONED RELATIVE TO THE PAGE === */
+.logo-container {
+  position: absolute;
+  top: 20px; /* Adjust spacing from the top of the page */
+  left: 20px; /* Adjust spacing from the left of the page */
+  z-index: 10; /* Ensure the logo is above the overlay and form */
+  padding: 0;
+  margin: 0;
+}
+
+.form-logo {
+  width: 200px; /* Increased size slightly for better visibility on the page */
+  height: auto;
+  border-radius: 0%; /* Optional: if you want a circular logo */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Added a subtle shadow to make it stand out */
+}
+/* ======================================================= */
+
+.form-container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 12px;
+  width: 450px; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+  text-align: center;
+  position: relative; 
+  z-index: 1; 
+}
+
+.form-container h2 {
+  margin-bottom: 10px;
+  color: #1f3762; 
+}
+
+.form-container p {
+  font-size: 14px;
+  color: #4c628f; 
+  margin-bottom: 20px;
+}
+
+.form-container input,
+.form-container select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.mobile-input {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-input span {
+  background: #eee; 
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  white-space: nowrap; 
+}
+
+.mobile-input input {
+  flex: 1;
+  border-radius: 0 6px 6px 0;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #0a99e6; 
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #087bc4; 
+}
+
+.message {
+  margin-top: 15px;
+  color: green;
+  font-weight: bold;
+}
+
+.footer-message {
+    color: #4c628f; 
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: 500;
+}

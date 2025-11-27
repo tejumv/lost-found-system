@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Bariol';
+    /* If Home.css is in /src/pages/ and fonts are in /src/fonts/ */
+    src: url('../fonts/Bariol_Regular.woff2') format('woff2'); 
+    font-weight: 400;
+    font-style: normal;
+}
+/* ... and apply 'Bariol' as the font-family */
