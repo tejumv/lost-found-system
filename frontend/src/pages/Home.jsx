@@ -139,7 +139,7 @@ const Home = () => {
                         {/* Action Buttons: NOW USING LOGIN/CREATE ACCOUNT */}
 
                         {/* 1. Login Button -> /login */}
-                        <Link to="/login" className="link-button-wrapper">
+                        <Link to="/login1" className="link-button-wrapper">
                             <button className="login-button">Log In</button>
                         </Link>
 

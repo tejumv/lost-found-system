@@ -1,145 +1,272 @@
+/* src/pages/Dashboard.css */
+
+/* General Body Styles */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa; /* Light background for the page */
+    color: #333;
+}
+
 .dashboard-container {
-  margin-top: 40px;     /* Move content up */
-  padding-bottom: 80px; /* Space before footer */
-  min-height: 80vh;     /* Ensures footer stays at bottom */
-}
-
-.dash-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 60px 80px;
-  background: linear-gradient(120deg, #f6f3f3, #faf6f6);
-  overflow: hidden;
-}
-
-.dash-content {
-  max-width: 500px;
-}
-
-.dash-title {
-  font-size: 58px;
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 5px;
-  color: #222;
-}
-
-.dash-title span {
-  color: #050231;
-}
-
-.dash-sub {
-  font-size: 18px;
-  margin-bottom: 35px;
-  color: #333;
-}
-
-.dash-buttons {
-  display: flex;
-  gap: 18px;
-}
-
-.btn-lost,
-.btn-found {
-  padding: 16px 34px;
-  font-size: 20px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  color: rgb(255, 255, 255);
-  font-weight: 600;
-  transition: 0.25s ease;
-}
-
-/* Button colors */
-.btn-lost {
-  background-color: #041d45;
-}
-
-.btn-found {
-  background-color: #7aa9c6;
-}
-
-/* Hover effect */
-.btn-lost:hover {
-  background-color: #294884;
-}
-
-.btn-found:hover {
-  background-color: #05226b;
-}
-
-/* Active press effect */
-.btn-lost:active,
-.btn-found:active {
-  transform: scale(0.96);
-}
-.dash-cards {
-  display: flex;
-  flex-direction: row;   /* one below another */
-  gap: 170px;
-}
-
-.dash-card {
-  width: 260px;
-  background: rgba(13, 7, 85, 0.45); /* dark glass effect */
-  backdrop-filter: blur(8px);
-  border-radius: 18px;
-  padding: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.dash-card:hover {
-  transform: translateY(-5px) scale(1.03);
-}
-
-.dash-card img {
-  width: 220px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 12px;
-}
-
-.dash-card p {
-  font-size: 18px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-}
-
-.dash-images {
-  display: flex;
-  gap: 15px;
-}
-
-.dash-images img {
-  width: 180px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 14px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.18);
-  transition: transform 0.3s ease;
-}
-
-.dash-images img:hover {
-  transform: translateY(-6px);
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-  .dash-wrapper {
+    display: flex;
     flex-direction: column;
-    text-align: center;
-  }
+    min-height: 100vh;
+}
 
-  .dash-images {
-    margin-top: 30px;
-  }
+/* --- Top Navigation Bar --- */
+.top-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1f3762; /* Dark blue from your image */
+    padding: 10px 40px;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: sticky; /* Keeps navbar at the top */
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.college-logo {
+    height: 40px; /* Adjust size as needed */
+    margin-right: 15px;
+}
+
+.navbar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #a7d9ff; /* Lighter blue on hover */
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* --- Main Content Area --- */
+.dashboard-main-content {
+    flex-grow: 1; /* Allows content to take up remaining space */
+    padding: 60px 80px; /* Increased padding for more breathing room */
+    display: flex;
+    gap: 60px; /* Space between hero and cards */
+    align-items: flex-start; /* Align content to the top */
+    max-width: 1200px; /* Max width for content */
+    margin: 0 auto; /* Center content */
+}
+
+.hero-section {
+    flex: 2; /* Takes up more space than cards */
+    padding-right: 40px; /* Space between text and cards */
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #2c3e50; /* Darker text for emphasis */
+    margin-bottom: 15px;
+    line-height: 1.1;
+}
+
+.highlight-text {
+    color: #007bff; /* Bright blue highlight */
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: #555;
+    margin-bottom: 30px;
+    max-width: 500px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 20px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s;
+    text-decoration: none; /* For Link components */
+    display: inline-flex; /* To ensure padding works with Link */
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background-color: #1f3762; /* Dark blue primary button */
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1a2e4b;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: #e0e6ed; /* Light gray secondary button */
+    color: #1f3762;
+    border: 1px solid #cdd4df;
+}
+
+.btn-secondary:hover {
+    background-color: #cdd4df;
+    transform: translateY(-2px);
+}
+
+/* --- Feature Cards Section --- */
+.feature-cards-section {
+    flex: 1; /* Takes up less space */
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 30px; /* Align cards visually with hero text */
+}
+
+.feature-card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-icon {
+    width: 80px; /* Adjust icon size */
+    height: auto;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)); /* Soft shadow for icons */
+}
+
+.card-text {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* --- Footer --- */
+.dashboard-footer {
+    background-color: #1f3762; /* Dark blue matching navbar */
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 20px 40px;
+    font-size: 0.9rem;
+    margin-top: 50px; /* Space above footer */
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .dashboard-main-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 30px;
+        text-align: center;
+    }
+
+    .hero-section {
+        padding-right: 0;
+        margin-bottom: 40px;
+    }
+
+    .hero-title {
+        font-size: 2.8rem;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .feature-cards-section {
+        flex-direction: row; /* Cards side-by-side on tablet */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .feature-card {
+        flex: 1 1 45%; /* Two cards per row */
+        max-width: 300px;
+    }
+
+    .top-navbar {
+        padding: 10px 20px;
+    }
+
+    .navbar-links {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 15px;
+    }
+    .navbar-links {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .nav-link {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    .hero-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .btn {
+        width: 100%;
+    }
+    .feature-cards-section {
+        flex-direction: column; /* Stack cards on mobile */
+    }
+    .feature-card {
+        flex: 1 1 100%;
+        max-width: none;
+    }
 }
