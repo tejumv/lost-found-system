@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // Import useLocation
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom"; // Added Navigate
 
 // Page Components
 import Home from "./pages/Home";
@@ -7,19 +7,25 @@ import Found from "./pages/Found";
 import Items from "./pages/Items";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import ReportItem from "./pages/ReportItem";
 import Footbar from "./components/Footbar";
 import Login1 from "./pages/Login1";
-
 // Navbar Component
 import Navbar from "./components/Navbar";
+
+// --- PRIVATE ROUTE COMPONENT ---
+const PrivateRoute = ({ children }) => {
+  // Check if user is logged in (has token in localStorage)
+  const token = localStorage.getItem('token');
+  return token ? children : <Navigate to="/login" />;
+};
 
 // --- NEW COMPONENT TO MANAGE CONDITIONAL RENDERING ---
 function AppContent() {
   const location = useLocation();
 
   // Define the path(s) where the Navbar should NOT be shown
-  // We want to hide it on the Home page, which is at path: "/"
-const hideNavbarPaths = ['/', '/login', '/login1'];
+  const hideNavbarPaths = ['/', '/login', '/login1'];
   // Check if the current path is in the exclusion list
   const shouldShowNavbar = !hideNavbarPaths.includes(location.pathname);
 
@@ -27,7 +33,7 @@ const hideNavbarPaths = ['/', '/login', '/login1'];
     <>
       {/* 💡 Conditional Rendering */}
       {shouldShowNavbar && <Navbar />}
-      
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/lost" element={<Lost />} />
@@ -37,14 +43,32 @@ const hideNavbarPaths = ['/', '/login', '/login1'];
         <Route path="/login" element={<Login />} />
         <Route path="/login1" element={<Login1 />} />
         <Route path="/contact" element={<p>Contact Details Page Placeholder</p>} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        
+
+        {/* PROTECTED ROUTES - Require Login */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/report-item"
+          element={
+            <PrivateRoute>
+              <ReportItem />
+            </PrivateRoute>
+          }
+        />
+
         {/* Note: Footbar is typically a component, not a route. 
            If you want the Footbar on all pages, it should be placed 
            outside the <Routes> block like the Navbar. */}
-        <Route path="/footbar" element={<Footbar />} /> 
+        <Route path="/footbar" element={<Footbar />} />
       </Routes>
-      
+
       {/* You can optionally render Footbar here if you want it on all pages */}
       {/* <Footbar /> */}
     </>
