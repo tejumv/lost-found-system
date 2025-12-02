@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema({
-  title: { type: String, required: true, trim: true },
+  itemName: { type: String, required: true, trim: true }, // Important: itemName not title
   description: { type: String, required: true, trim: true },
-  category: { type: String, required: true, enum: ["lost", "found"] },
-  status: { type: String, enum: ["pending", "found", "returned"], default: "pending" },
+  category: { type: String, required: true, enum: ["Lost", "Found"] }, // Capital L and F
+  status: { type: String, enum: ["pending", "claimed", "returned"], default: "pending" },
   location: { type: String, required: true, trim: true },
   date: { type: Date, required: true },
   image: { type: String, default: "" },
@@ -14,6 +14,6 @@ const itemSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Enable search
-itemSchema.index({ title: "text", description: "text", location: "text" });
+itemSchema.index({ itemName: "text", description: "text", location: "text" });
 
 module.exports = mongoose.model("Item", itemSchema);

@@ -28,6 +28,12 @@ mongoose
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/items", itemRoutes);
+const path = require('path');
+
+// Add this after middleware but before routes
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
