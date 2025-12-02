@@ -1,43 +1,69 @@
-import React from "react";
-import "./Dashboard.css";
-import Footer from "../components/Footbar";
-import Image2 from "../assets/img2.jpg"
-import Watch from "../assets/watch.jpg"
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './Dashboard.css';
 
-const Dashboard = () => {
+function Dashboard() {
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  };
+
   return (
     <div className="dashboard-container">
-      <div className="dash-wrapper">
-        <div className="dash-content">
-          <h1 className="dash-title">
-            Find & Recover <br /> <span>With Ease</span>
-          </h1>
+      <div className="dashboard-header">
+        <h1>Welcome to Campus Lost & Found Portal</h1>
+        <p>Manage your lost and found items efficiently</p>
+      </div>
 
-          <p className="dash-sub">
-            Experience effortless searching & reporting for lost and found items.
-          </p>
+      <div className="dashboard-actions">
+        <div className="action-card">
+          <h3>🔍 Report New Item</h3>
+          <p>Report a lost item you're looking for or a found item you want to return</p>
+          <Link to="/report-item">
+            <button className="action-btn primary-btn">
+              Report Lost/Found Item
+            </button>
+          </Link>
+        </div>
 
-          <div className="dash-buttons">
-            <button className="btn-lost">Search an Item</button>
-            <button className="btn-found">Report Lost Item</button>
+        <div className="action-card">
+          <h3>📋 View My Reports</h3>
+          <p>Check the status of your reported items</p>
+          <Link to="/items">
+            <button className="action-btn secondary-btn">
+              View My Items
+            </button>
+          </Link>
+        </div>
+
+        <div className="action-card">
+          <h3>🔎 Browse Items</h3>
+          <p>Search through all lost and found items on campus</p>
+          <div className="button-group">
+            <Link to="/lost">
+              <button className="action-btn tertiary-btn">
+                Lost Items
+              </button>
+            </Link>
+            <Link to="/found">
+              <button className="action-btn tertiary-btn">
+                Found Items
+              </button>
+            </Link>
           </div>
         </div>
-<div className="dash-cards">
-  <div className="dash-card">
-    <img src={Watch} alt="" />
-    <p>A dedicated place for people to look for and reclaim their misplaced possessions.</p>
-  </div>
-
-  <div className="dash-card">
-    <img src={Image2} alt="Found Items" />
-    <p>Enhances security by providing a secure, accountable process for handling items.</p>
-  </div>
-</div>
-
       </div>
-      <Footer />
+
+      <div className="dashboard-footer">
+        <button onClick={handleLogout} className="logout-btn">
+          Logout
+        </button>
+        <p className="user-info">
+          Logged in as: <span>{localStorage.getItem('userEmail') || 'User'}</span>
+        </p>
+      </div>
     </div>
   );
-};
+}
 
 export default Dashboard;
