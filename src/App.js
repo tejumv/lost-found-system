@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom"; // Added Navigate
 
 // Page Components
+import AdminLogin from "./admin/AdminLogin";
+import AdminDashboard from "./admin/AdminDashboard";
+
 import Home from "./pages/Home";
 import Lost from "./pages/Lost";
 import Found from "./pages/Found";
@@ -37,6 +40,9 @@ function AppContent() {
       {shouldShowNavbar && <Navbar />}
 
       <Routes>
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
         <Route path="/" element={<Home />} />
         <Route path="/lost" element={<Lost />} />
         <Route path="/found" element={<Found />} />
