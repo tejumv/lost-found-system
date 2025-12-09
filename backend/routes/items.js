@@ -1,13 +1,14 @@
 const express = require("express");
-const { addItem, getItems } = require("../controllers/itemController");
+const { addItem, getItems, getUserItems } = require("../controllers/itemController");
 const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-// Protected route
+// Protected routes
 router.post("/add", auth, addItem);
+router.get("/my-items", auth, getUserItems);
 
-// Public route
+// Public routes
 router.get("/", getItems);
 
 module.exports = router;

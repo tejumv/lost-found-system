@@ -1,242 +1,333 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import "./ReportItem.css";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import './ReportItem.css';
 
 const ReportItem = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        itemName: "",
-        category: "",
-        location: "",
-        dateLost: "",
-        description: "",
+        title: '',
+        description: '',
+        category: 'lost',
+        location: '',
+        date: new Date().toISOString().split('T')[0],
+        contactInfo: '',
         image: null,
     });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [imagePreview, setImagePreview] = useState(null);
 
-    // Get user token from localStorage
-    const token = localStorage.getItem("token");
-
-    const categories = [
-        "Electronics",
-        "Books & Stationery",
-        "Clothing & Accessories",
-        "ID Cards & Documents",
-        "Bags & Wallets",
-        "Keys",
-        "Water Bottles",
-        "Other",
+    const campusLocations = [
+        'Main Building',
+        'Library',
+        'Cafeteria',
+        'Computer Lab',
+        'Sports Complex',
+        'Parking Lot',
+        'Hostel Block A',
+        'Hostel Block B',
+        'Admin Block',
+        'Auditorium',
+        'Classroom Block',
+        'Medical Center',
+        'Playground',
+        'Gymnasium',
+        'Other'
     ];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleFileChange = (e) => {
-        setFormData({
-            ...formData,
-            image: e.target.files[0],
-        });
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            setMessage('❌ Please upload only image files');
+            e.target.value = '';
+            return;
+        }
+
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+            setMessage('❌ Image size should be less than 5MB');
+            e.target.value = '';
+            return;
+        }
+
+        setFormData({ ...formData, image: file });
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const validateForm = () => {
+        if (!formData.title.trim()) return '❌ Item title is required';
+        if (!formData.description.trim()) return '❌ Description is required';
+        if (!formData.location.trim()) return '❌ Please select location';
+        if (!formData.date) return '❌ Date is required';
+        if (!formData.contactInfo.trim()) return '❌ Contact number is required';
+        if (!/^\d{10}$/.test(formData.contactInfo)) return '❌ Contact number must be 10 digits';
+        if (!formData.image) return '❌ Please upload a picture of the item';
+
+        // Validate date is not in future
+        const selectedDate = new Date(formData.date);
+        const today = new Date();
+        if (selectedDate > today) return '❌ Date cannot be in the future';
+
+        return null;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const validationError = validateForm();
+        if (validationError) {
+            setMessage(validationError);
+            return;
+        }
+
+        setLoading(true);
+        setMessage('');
+
+        const token = localStorage.getItem('token');
         if (!token) {
-            setMessage("Please login first!");
-            setTimeout(() => navigate("/login"), 2000);
+            setMessage('❌ Please login first');
+            setLoading(false);
+            navigate('/login');
             return;
         }
 
-        // Validation
-        if (!formData.itemName.trim()) {
-            setMessage("Please enter item name");
-            return;
-        }
-        if (!formData.category) {
-            setMessage("Please select a category");
-            return;
-        }
-        if (!formData.location.trim()) {
-            setMessage("Please enter location");
-            return;
-        }
-        if (!formData.dateLost) {
-            setMessage("Please select date");
-            return;
-        }
-
-        setIsSubmitting(true);
-        setMessage("");
+        const data = new FormData();
+        data.append('title', formData.title.trim());
+        data.append('description', formData.description.trim());
+        data.append('category', formData.category);
+        data.append('location', formData.location);
+        data.append('date', formData.date);
+        data.append('contactInfo', formData.contactInfo.trim());
+        data.append('image', formData.image);
 
         try {
-            const data = new FormData();
-            data.append("itemName", formData.itemName);
-            data.append("category", formData.category);
-            data.append("location", formData.location);
-            data.append("dateLost", formData.dateLost);
-            data.append("description", formData.description);
-            if (formData.image) {
-                data.append("image", formData.image);
-            }
+            const response = await axios.post('http://localhost:5000/api/items/add', data, {
+                headers: {
+                    'x-auth-token': token,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
-            // Use the correct endpoint - /api/items/report
-            const response = await axios.post(
-                "http://localhost:5000/api/items/report",
-                data,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
+            if (response.data.success) {
+                setMessage('✅ Item reported successfully! Redirecting...');
 
-            if (response.status === 201) {
-                setMessage("Item reported successfully!");
                 // Reset form
                 setFormData({
-                    itemName: "",
-                    category: "",
-                    location: "",
-                    dateLost: "",
-                    description: "",
+                    title: '',
+                    description: '',
+                    category: 'lost',
+                    location: '',
+                    date: new Date().toISOString().split('T')[0],
+                    contactInfo: '',
                     image: null,
                 });
-                // Clear file input
-                document.getElementById("imageInput").value = "";
+                setImagePreview(null);
 
-                // Redirect to dashboard after 2 seconds
-                setTimeout(() => navigate("/dashboard"), 2000);
+                // Clear file input
+                const fileInput = document.querySelector('input[type="file"]');
+                if (fileInput) fileInput.value = '';
+
+                // Redirect to dashboard
+                setTimeout(() => navigate('/dashboard'), 2000);
+            } else {
+                setMessage(`❌ ${response.data.message || 'Failed to report item'}`);
             }
         } catch (error) {
-            console.error("Error reporting item:", error);
-            setMessage(error.response?.data?.message || "Failed to report item. Please try again.");
+            console.error('Error:', error);
+
+            if (error.response) {
+                if (error.response.status === 401) {
+                    setMessage('❌ Session expired. Please login again');
+                    localStorage.removeItem('token');
+                    setTimeout(() => navigate('/login'), 2000);
+                } else if (error.response.status === 413) {
+                    setMessage('❌ Image file is too large (max 5MB)');
+                } else {
+                    setMessage(`❌ ${error.response.data?.message || 'Server error'}`);
+                }
+            } else if (error.request) {
+                setMessage('❌ Cannot connect to server');
+            } else {
+                setMessage(`❌ ${error.message}`);
+            }
         } finally {
-            setIsSubmitting(false);
+            setLoading(false);
         }
     };
 
-    // If no token, redirect to login
-    if (!token) {
-        navigate("/login");
-        return null;
-    }
-
     return (
-        <div className="report-item-container">
-            <div className="report-item-card">
-                <h2>Report Lost Item</h2>
-                <p className="subtitle">Help others find your lost belongings</p>
+        <div className="report-container">
+            <div className="report-header">
+                <h1>Report Lost or Found Item</h1>
+            </div>
 
-                {message && (
-                    <div className={`message ${message.includes("successfully") ? "success" : "error"}`}>
-                        {message}
-                    </div>
-                )}
+            {message && (
+                <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+                    {message}
+                </div>
+            )}
 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="itemName">Item Name *</label>
-                        <input
-                            type="text"
-                            id="itemName"
-                            name="itemName"
-                            value={formData.itemName}
-                            onChange={handleChange}
-                            placeholder="e.g., Blue Water Bottle, MacBook Pro"
-                            required
-                        />
-                    </div>
+            <div className="report-card">
+                <form onSubmit={handleSubmit} className="report-form">
+                    <div className="form-section">
+                        <h3>Item Information</h3>
 
-                    <div className="form-group">
-                        <label htmlFor="category">Category *</label>
-                        <select
-                            id="category"
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="">Select a category</option>
-                            {categories.map((cat) => (
-                                <option key={cat} value={cat}>
-                                    {cat}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                        <div className="form-group">
+                            <label>Item Title *</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleChange}
+                                placeholder="e.g., Blue Water Bottle, MacBook Charger"
+                                maxLength="100"
+                                required
+                            />
+                        </div>
 
-                    <div className="form-group">
-                        <label htmlFor="location">Location Lost *</label>
-                        <input
-                            type="text"
-                            id="location"
-                            name="location"
-                            value={formData.location}
-                            onChange={handleChange}
-                            placeholder="e.g., Library 2nd Floor, Canteen, Block A"
-                            required
-                        />
-                    </div>
+                        <div className="form-group">
+                            <label>Description *</label>
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                placeholder="Describe the item in detail (color, brand, size, distinguishing features)"
+                                rows="3"
+                                maxLength="500"
+                                required
+                            />
+                        </div>
 
-                    <div className="form-group">
-                        <label htmlFor="dateLost">Date Lost *</label>
-                        <input
-                            type="date"
-                            id="dateLost"
-                            name="dateLost"
-                            value={formData.dateLost}
-                            onChange={handleChange}
-                            max={new Date().toISOString().split("T")[0]}
-                            required
-                        />
-                    </div>
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Category *</label>
+                                <select
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="lost">🚨 Lost Item</option>
+                                    <option value="found">📦 Found Item</option>
+                                </select>
+                            </div>
 
-                    <div className="form-group">
-                        <label htmlFor="description">Description</label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            placeholder="Provide more details like brand, color, distinguishing marks..."
-                            rows="4"
-                        />
+                            <div className="form-group">
+                                <label>Date *</label>
+                                <input
+                                    type="date"
+                                    name="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                    max={new Date().toISOString().split('T')[0]}
+                                    required
+                                />
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="imageInput">Upload Image (Optional)</label>
-                        <input
-                            type="file"
-                            id="imageInput"
-                            name="image"
-                            onChange={handleFileChange}
-                            accept="image/*"
-                        />
-                        <small>Max file size: 5MB. Supported: JPG, PNG, JPEG</small>
+                    <div className="form-section">
+                        <h3>Location Details</h3>
+
+                        <div className="form-group">
+                            <label>Location *</label>
+                            <select
+                                name="location"
+                                value={formData.location}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Location</option>
+                                {campusLocations.map((loc) => (
+                                    <option key={loc} value={loc}>{loc}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Contact Number *</label>
+                            <input
+                                type="tel"
+                                name="contactInfo"
+                                value={formData.contactInfo}
+                                onChange={handleChange}
+                                placeholder="10-digit mobile number"
+                                pattern="[0-9]{10}"
+                                required
+                            />
+                            <small>We'll contact you when item is found/claimed</small>
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h3>Upload Picture *</h3>
+
+                        <div className="image-upload-area">
+                            <label className="upload-label">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    required
+                                />
+                                <div className="upload-box">
+                                    {imagePreview ? (
+                                        <div className="image-preview">
+                                            <img src={imagePreview} alt="Preview" />
+                                            <button
+                                                type="button"
+                                                className="remove-btn"
+                                                onClick={() => {
+                                                    setImagePreview(null);
+                                                    setFormData({ ...formData, image: null });
+                                                }}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="upload-placeholder">
+                                            <span className="upload-icon">📷</span>
+                                            <p>Click to upload image</p>
+                                            <small>Max size: 5MB | Formats: JPG, PNG</small>
+                                        </div>
+                                    )}
+                                </div>
+                            </label>
+                        </div>
                     </div>
 
                     <div className="form-actions">
                         <button
                             type="button"
                             className="cancel-btn"
-                            onClick={() => navigate("/dashboard")}
+                            onClick={() => navigate('/dashboard')}
+                            disabled={loading}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             className="submit-btn"
-                            disabled={isSubmitting}
+                            disabled={loading}
                         >
-                            {isSubmitting ? "Reporting..." : "Report Item"}
+                            {loading ? 'Submitting...' : 'Submit Report'}
                         </button>
                     </div>
                 </form>

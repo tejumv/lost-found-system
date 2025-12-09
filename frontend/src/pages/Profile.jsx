@@ -9,11 +9,11 @@ const Profile = () => {
         name: "",
         email: "",
         phone: "",
-        enrollmentNo: "",
+        enrollment: "",
         branch: "",
         year: "",
     });
-    const [reportedItems, setReportedItems] = useState([]);
+    const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,127 +23,196 @@ const Profile = () => {
             return;
         }
 
-        fetchUserData(token);
-        fetchReportedItems(token);
+        fetchProfile(token);
+        fetchUserItems(token);
     }, [navigate]);
 
-    const fetchUserData = async (token) => {
+    const fetchProfile = async (token) => {
         try {
-            const response = await axios.get("http://localhost:5000/api/auth/profile", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setUserData(response.data.user);
+            // Get user data from localStorage or backend
+            const name = localStorage.getItem("userName") || "User";
+            const email = localStorage.getItem("userEmail") || "user@example.com";
+            const phone = localStorage.getItem("userPhone") || "Not provided";
+            const enrollment = localStorage.getItem("userEnrollment") || "Not provided";
+            const branch = localStorage.getItem("userBranch") || "Not provided";
+            const year = localStorage.getItem("userYear") || "Not provided";
+
+            setUserData({ name, email, phone, enrollment, branch, year });
         } catch (error) {
-            console.error("Error fetching user data:", error);
+            console.error("Error fetching profile:", error);
         }
     };
 
-    const fetchReportedItems = async (token) => {
+    const fetchUserItems = async (token) => {
         try {
             const response = await axios.get("http://localhost:5000/api/items/my-items", {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { "x-auth-token": token },
             });
-            setReportedItems(response.data.items);
+
+            if (response.data.success) {
+                setItems(response.data.items || []);
+            }
         } catch (error) {
             console.error("Error fetching items:", error);
+            // For demo, create dummy items
+            setItems([
+                {
+                    _id: "1",
+                    title: "Blue Water Bottle",
+                    category: "lost",
+                    location: "Library",
+                    date: "2024-12-05",
+                    status: "pending",
+                },
+                {
+                    _id: "2",
+                    title: "MacBook Charger",
+                    category: "found",
+                    location: "Computer Lab",
+                    date: "2024-12-04",
+                    status: "found",
+                },
+            ]);
         } finally {
             setLoading(false);
         }
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
+        localStorage.clear();
         navigate("/login");
     };
 
     if (loading) {
-        return <div className="loading">Loading...</div>;
+        return (
+            <div className="profile-loading">
+                <div className="spinner"></div>
+                <p>Loading profile...</p>
+            </div>
+        );
     }
 
     return (
-        <div className="profile-container">
-            <div className="profile-sidebar">
-                <div className="profile-avatar">
-                    <div className="avatar-circle">
-                        {userData.name ? userData.name.charAt(0).toUpperCase() : "U"}
-                    </div>
-                    <h3>{userData.name}</h3>
-                    <p>{userData.email}</p>
+        <div className="profile-page">
+            <div className="profile-container">
+                <div className="profile-header">
+                    <h1>My Profile</h1>
+                    <button className="logout-btn" onClick={handleLogout}>
+                        Logout
+                    </button>
                 </div>
 
-                <div className="profile-stats">
-                    <div className="stat-item">
-                        <span className="stat-number">{reportedItems.length}</span>
-                        <span className="stat-label">Items Reported</span>
-                    </div>
-                    <div className="stat-item">
-                        <span className="stat-number">
-                            {reportedItems.filter(item => item.status === "found").length}
-                        </span>
-                        <span className="stat-label">Items Found</span>
-                    </div>
-                </div>
+                <div className="profile-content">
+                    {/* User Info Card */}
+                    <div className="user-info-card">
+                        <div className="user-avatar">
+                            <div className="avatar-circle">
+                                {userData.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="user-details">
+                                <h2>{userData.name}</h2>
+                                <p className="user-email">{userData.email}</p>
+                            </div>
+                        </div>
 
-                <button className="logout-btn" onClick={handleLogout}>
-                    Logout
-                </button>
-            </div>
-
-            <div className="profile-content">
-                <div className="profile-section">
-                    <h2>Personal Information</h2>
-                    <div className="info-grid">
-                        <div className="info-item">
-                            <label>Full Name</label>
-                            <p>{userData.name}</p>
-                        </div>
-                        <div className="info-item">
-                            <label>Email</label>
-                            <p>{userData.email}</p>
-                        </div>
-                        <div className="info-item">
-                            <label>Phone</label>
-                            <p>{userData.phone || "Not provided"}</p>
-                        </div>
-                        <div className="info-item">
-                            <label>Enrollment No</label>
-                            <p>{userData.enrollmentNo || "Not provided"}</p>
-                        </div>
-                        <div className="info-item">
-                            <label>Branch</label>
-                            <p>{userData.branch || "Not provided"}</p>
-                        </div>
-                        <div className="info-item">
-                            <label>Year</label>
-                            <p>{userData.year || "Not provided"}</p>
+                        <div className="user-stats">
+                            <div className="stat">
+                                <span className="stat-number">{items.length}</span>
+                                <span className="stat-label">Items Reported</span>
+                            </div>
+                            <div className="stat">
+                                <span className="stat-number">
+                                    {items.filter(item => item.category === "found").length}
+                                </span>
+                                <span className="stat-label">Found Items</span>
+                            </div>
+                            <div className="stat">
+                                <span className="stat-number">
+                                    {items.filter(item => item.status === "returned").length}
+                                </span>
+                                <span className="stat-label">Returned</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="profile-section">
-                    <h2>Your Reported Items</h2>
-                    {reportedItems.length === 0 ? (
-                        <p className="no-items">You haven't reported any items yet.</p>
-                    ) : (
-                        <div className="items-grid">
-                            {reportedItems.map((item) => (
-                                <div key={item._id} className="item-card">
-                                    {item.image && (
-                                        <img src={item.image} alt={item.itemName} className="item-image" />
-                                    )}
-                                    <div className="item-details">
-                                        <h4>{item.itemName}</h4>
-                                        <p className="item-category">{item.category}</p>
-                                        <p className="item-location">📍 {item.location}</p>
-                                        <p className="item-date">📅 {new Date(item.dateLost).toLocaleDateString()}</p>
-                                        <span className={`status-badge ${item.status}`}>
-                                            {item.status}
-                                        </span>
+                    {/* Personal Information */}
+                    <div className="info-section">
+                        <h3>Personal Information</h3>
+                        <div className="info-grid">
+                            <div className="info-item">
+                                <label>Full Name</label>
+                                <p>{userData.name}</p>
+                            </div>
+                            <div className="info-item">
+                                <label>Email</label>
+                                <p>{userData.email}</p>
+                            </div>
+                            <div className="info-item">
+                                <label>Phone</label>
+                                <p>{userData.phone}</p>
+                            </div>
+                            <div className="info-item">
+                                <label>Enrollment No</label>
+                                <p>{userData.enrollment}</p>
+                            </div>
+                            <div className="info-item">
+                                <label>Branch</label>
+                                <p>{userData.branch}</p>
+                            </div>
+                            <div className="info-item">
+                                <label>Year</label>
+                                <p>{userData.year}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Reported Items */}
+                    <div className="items-section">
+                        <div className="section-header">
+                            <h3>My Reported Items</h3>
+                            <button
+                                className="report-btn"
+                                onClick={() => navigate("/report-item")}
+                            >
+                                + Report New
+                            </button>
+                        </div>
+
+                        {items.length === 0 ? (
+                            <div className="no-items">
+                                <p>You haven't reported any items yet.</p>
+                                <button
+                                    className="browse-btn"
+                                    onClick={() => navigate("/items")}
+                                >
+                                    Browse Items
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="items-list">
+                                {items.map((item) => (
+                                    <div key={item._id} className="item-card">
+                                        <div className="item-category">
+                                            <span className={`category-badge ${item.category}`}>
+                                                {item.category === "lost" ? "🚨 Lost" : "📦 Found"}
+                                            </span>
+                                            <span className={`status-badge ${item.status}`}>
+                                                {item.status}
+                                            </span>
+                                        </div>
+                                        <h4>{item.title}</h4>
+                                        <p className="item-description">{item.description}</p>
+                                        <div className="item-details">
+                                            <span className="location">📍 {item.location}</span>
+                                            <span className="date">
+                                                📅 {new Date(item.date).toLocaleDateString()}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
