@@ -1,16 +1,17 @@
 const express = require("express");
-const { registerUser, loginUser, getCurrentUser, updateProfile } = require("../controllers/authController");
+const router = express.Router();
+const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
 
-const router = express.Router();
-
 // Public routes
-router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.post("/register", authController.registerUser);
+router.post("/login", authController.login);
+router.post("/verify-email", authController.verifyEmail);
+router.post("/reset-password", authController.resetPassword);
 
 // Protected routes (need token)
-router.get("/me", auth, getCurrentUser);
-router.put("/update", auth, updateProfile);
+router.get("/me", auth, authController.getCurrentUser);
+router.put("/update", auth, authController.updateProfile);
 
 // Get All Users (for testing - optional)
 router.get("/all", async (req, res) => {
