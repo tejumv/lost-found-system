@@ -8,15 +8,7 @@ const itemSchema = new mongoose.Schema({
     required: true,
     enum: ['lost', 'found']
   },
-  itemType: {
-    type: String,
-    required: true,
-    enum: [
-      'Electronics', 'Documents', 'Accessories',
-      'Books', 'Clothing', 'Wallet/Purse',
-      'Keys', 'Bags', 'Stationery', 'Headphones', 'Other'
-    ]
-  },
+
   location: { type: String, required: true },
   exactLocation: { type: String, default: "" },
   date: { type: Date, required: true },
