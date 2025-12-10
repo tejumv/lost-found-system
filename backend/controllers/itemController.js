@@ -2,7 +2,6 @@ const Item = require("../models/Item");
 const Notification = require("../models/Notification");
 const User = require("../models/User");
 
-
 // Helper: Extract keywords from text
 const extractKeywords = (text) => {
   const commonWords = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'with', 'by'];
@@ -63,6 +62,11 @@ const calculateMatchScore = (item1, item2) => {
 // Report new item with smart matching
 exports.reportItem = async (req, res) => {
   try {
+    console.log("=== REPORT ITEM START ===");
+    console.log("Request body:", req.body);
+    console.log("Request file:", req.file ? "Image uploaded" : "No image");
+    console.log("User ID from token:", req.userId);
+
     const {
       title, description, category, itemType,
       location, exactLocation, date, contactInfo,
@@ -73,19 +77,24 @@ exports.reportItem = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
+      console.log("User not found for ID:", userId);
       return res.status(404).json({
         success: false,
         message: "User not found"
       });
     }
 
+    console.log("User found:", user.name, user.email);
+
     // Extract keywords for smart matching
     const keywords = extractKeywords(`${title} ${description}`);
+    console.log("Extracted keywords:", keywords);
 
     // Handle image upload
     let imageUrl = "";
     if (req.file) {
       imageUrl = `/uploads/${req.file.filename}`;
+      console.log("Image saved at:", imageUrl);
     }
 
     // Create new item
@@ -108,19 +117,24 @@ exports.reportItem = async (req, res) => {
     });
 
     await newItem.save();
+    console.log("Item saved successfully. ID:", newItem._id);
 
     // Find potential matches
     const oppositeCategory = category === 'lost' ? 'found' : 'lost';
     const potentialMatches = await Item.find({
       category: oppositeCategory,
       status: 'pending',
-      itemType: itemType
+      itemType: itemType,
+      userId: { $ne: userId } // Don't match with user's own items
     });
+
+    console.log(`Found ${potentialMatches.length} potential matches`);
 
     let matchesFound = [];
 
     for (const match of potentialMatches) {
       const score = calculateMatchScore(newItem, match);
+      console.log(`Match score with ${match.title}: ${score}`);
 
       if (score >= 60) { // Threshold for match
         newItem.matchedItems.push({
@@ -184,6 +198,9 @@ exports.reportItem = async (req, res) => {
 
     await newItem.save();
 
+    console.log("=== REPORT ITEM COMPLETE ===");
+    console.log("Matches found:", matchesFound.length);
+
     res.status(201).json({
       success: true,
       message: "Item reported successfully",
@@ -196,7 +213,7 @@ exports.reportItem = async (req, res) => {
     console.error("Error reporting item:", error);
     res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error: " + error.message
     });
   }
 };
@@ -204,14 +221,19 @@ exports.reportItem = async (req, res) => {
 // Get user's items
 exports.getUserItems = async (req, res) => {
   try {
+    console.log("Getting items for user:", req.userId);
+
     const items = await Item.find({ userId: req.userId })
       .sort({ createdAt: -1 });
+
+    console.log(`Found ${items.length} items for user`);
 
     res.json({
       success: true,
       items
     });
   } catch (error) {
+    console.error("Error getting user items:", error);
     res.status(500).json({
       success: false,
       message: "Server error"
@@ -223,6 +245,7 @@ exports.getUserItems = async (req, res) => {
 exports.getAllItems = async (req, res) => {
   try {
     const { category, itemType, location, status, search } = req.query;
+    console.log("Get all items with filters:", { category, itemType, location, status, search });
 
     let filter = {};
     if (category) filter.category = category;
@@ -238,11 +261,14 @@ exports.getAllItems = async (req, res) => {
       .sort({ matchScore: -1, createdAt: -1 })
       .limit(50);
 
+    console.log(`Found ${items.length} items total`);
+
     res.json({
       success: true,
       items
     });
   } catch (error) {
+    console.error("Error getting all items:", error);
     res.status(500).json({
       success: false,
       message: "Server error"
@@ -253,21 +279,27 @@ exports.getAllItems = async (req, res) => {
 // Get item by ID
 exports.getItemById = async (req, res) => {
   try {
+    console.log("Getting item by ID:", req.params.id);
+
     const item = await Item.findById(req.params.id)
       .populate('matchedItems.itemId', 'title category location date image');
 
     if (!item) {
+      console.log("Item not found");
       return res.status(404).json({
         success: false,
         message: "Item not found"
       });
     }
 
+    console.log("Item found:", item.title);
+
     res.json({
       success: true,
       item
     });
   } catch (error) {
+    console.error("Error getting item by ID:", error);
     res.status(500).json({
       success: false,
       message: "Server error"
@@ -281,9 +313,12 @@ exports.claimItem = async (req, res) => {
     const { itemId } = req.body;
     const userId = req.userId;
 
+    console.log("Claim item:", { itemId, userId });
+
     const item = await Item.findById(itemId);
 
     if (!item) {
+      console.log("Item not found for claim");
       return res.status(404).json({
         success: false,
         message: "Item not found"
@@ -291,6 +326,7 @@ exports.claimItem = async (req, res) => {
     }
 
     if (item.category !== 'found') {
+      console.log("Cannot claim lost item");
       return res.status(400).json({
         success: false,
         message: "Only found items can be claimed"
@@ -298,6 +334,7 @@ exports.claimItem = async (req, res) => {
     }
 
     if (item.status !== 'pending' && item.status !== 'matched') {
+      console.log("Item not available for claim, status:", item.status);
       return res.status(400).json({
         success: false,
         message: "Item is not available for claim"
@@ -323,6 +360,8 @@ exports.claimItem = async (req, res) => {
       priority: 'high'
     });
 
+    console.log("Item claimed successfully");
+
     res.json({
       success: true,
       message: "Item claimed successfully",
@@ -330,6 +369,7 @@ exports.claimItem = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("Error claiming item:", error);
     res.status(500).json({
       success: false,
       message: "Server error"
@@ -343,9 +383,12 @@ exports.markAsReturned = async (req, res) => {
     const { itemId, handoverLocation } = req.body;
     const userId = req.userId;
 
+    console.log("Mark as returned:", { itemId, userId, handoverLocation });
+
     const item = await Item.findById(itemId);
 
     if (!item) {
+      console.log("Item not found for return");
       return res.status(404).json({
         success: false,
         message: "Item not found"
@@ -355,6 +398,7 @@ exports.markAsReturned = async (req, res) => {
     // Check if user is owner or claimant
     if (item.userId.toString() !== userId.toString() &&
       (!item.claimedBy || item.claimedBy.toString() !== userId.toString())) {
+      console.log("User not authorized to mark as returned");
       return res.status(403).json({
         success: false,
         message: "Not authorized"
@@ -387,6 +431,8 @@ exports.markAsReturned = async (req, res) => {
       });
     }
 
+    console.log("Item marked as returned");
+
     res.json({
       success: true,
       message: "Item marked as returned",
@@ -394,6 +440,7 @@ exports.markAsReturned = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("Error marking item as returned:", error);
     res.status(500).json({
       success: false,
       message: "Server error"
@@ -401,26 +448,56 @@ exports.markAsReturned = async (req, res) => {
   }
 };
 
-// Get statistics
+// Get statistics - FIXED VERSION
 exports.getStats = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const totalItems = await Item.countDocuments({ userId });
-    const lostItems = await Item.countDocuments({ userId, category: 'lost' });
-    const foundItems = await Item.countDocuments({ userId, category: 'found' });
+    console.log("=== GET STATS START ===");
+    console.log("User ID:", userId);
+
+    // Count all items for this user
+    const totalItems = await Item.countDocuments({ userId: userId }) || 0;
+    const lostItems = await Item.countDocuments({
+      userId: userId,
+      category: 'lost'
+    }) || 0;
+    const foundItems = await Item.countDocuments({
+      userId: userId,
+      category: 'found'
+    }) || 0;
     const returnedItems = await Item.countDocuments({
-      userId,
+      userId: userId,
       status: 'returned'
-    });
+    }) || 0;
     const matchedItems = await Item.countDocuments({
-      userId,
+      userId: userId,
       status: 'matched'
-    });
+    }) || 0;
 
     // Calculate recovery rate
-    const recoveryRate = lostItems > 0 ?
-      (returnedItems / lostItems * 100).toFixed(1) : 0;
+    let recoveryRate = 0;
+    if (lostItems > 0) {
+      recoveryRate = parseFloat(((returnedItems / lostItems) * 100).toFixed(1));
+    }
+
+    console.log("Stats calculated:", {
+      totalItems,
+      lostItems,
+      foundItems,
+      returnedItems,
+      matchedItems,
+      recoveryRate
+    });
+
+    // Debug: Show all items for this user
+    const allUserItems = await Item.find({ userId: userId });
+    console.log(`Total user items in DB: ${allUserItems.length}`);
+    allUserItems.forEach(item => {
+      console.log(`- ${item.title} (${item.category}, ${item.status})`);
+    });
+
+    console.log("=== GET STATS COMPLETE ===");
 
     res.json({
       success: true,
@@ -435,9 +512,52 @@ exports.getStats = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("Error in getStats:", error);
     res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error: " + error.message
+    });
+  }
+};
+
+// Debug: Get all items in database
+exports.debugAllItems = async (req, res) => {
+  try {
+    const items = await Item.find({});
+
+    console.log("=== DEBUG ALL ITEMS ===");
+    console.log(`Total items in database: ${items.length}`);
+
+    items.forEach(item => {
+      console.log(`- ID: ${item._id}`);
+      console.log(`  Title: ${item.title}`);
+      console.log(`  Category: ${item.category}`);
+      console.log(`  User ID: ${item.userId}`);
+      console.log(`  User Name: ${item.userName}`);
+      console.log(`  Created: ${item.createdAt}`);
+      console.log(`---`);
+    });
+
+    res.json({
+      success: true,
+      count: items.length,
+      items: items.map(item => ({
+        id: item._id,
+        title: item.title,
+        category: item.category,
+        status: item.status,
+        userId: item.userId,
+        userName: item.userName,
+        userEmail: item.userEmail,
+        createdAt: item.createdAt
+      }))
+    });
+
+  } catch (error) {
+    console.error("Debug error:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message
     });
   }
 };

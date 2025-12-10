@@ -53,4 +53,8 @@ router.post("/return", auth, itemController.markAsReturned);
 // Get stats
 router.get("/stats/my", auth, itemController.getStats);
 
+// === ADD THIS LINE FOR DEBUGGING ===
+router.get("/debug/all", itemController.debugAllItems);
+// ===================================
+
 module.exports = router;
