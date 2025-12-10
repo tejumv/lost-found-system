@@ -34,7 +34,7 @@ function AppContent() {
   const shouldShowNavbar = !hideNavbarPaths.includes(location.pathname);
 
   // Define paths where Footbar should NOT be shown
-  const hideFootbarPaths = ['/dashboard', '/report-item', '/profile'];
+  const hideFootbarPaths = ['/dashboard', '/report-item', '/profile','/','/login','/login1'];
   const shouldShowFootbar = !hideFootbarPaths.includes(location.pathname);
 
   return (
