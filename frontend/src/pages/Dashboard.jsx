@@ -218,31 +218,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Links */}
-        <div className="quick-links">
-          <h2>Quick Access</h2>
-          <div className="links-grid">
-            <Link to="/lost" className="link-card">
-              <div className="link-icon">🚨</div>
-              <h3>Lost Items</h3>
-              <p>Browse all lost items on campus</p>
-            </Link>
-            <Link to="/found" className="link-card">
-              <div className="link-icon">📦</div>
-              <h3>Found Items</h3>
-              <p>View items found by others</p>
-            </Link>
-            <Link to="/help" className="link-card">
-              <div className="link-icon">❓</div>
-              <h3>Help & Support</h3>
-              <p>Need help? Contact support</p>
-            </Link>
-            <Link to="/guidelines" className="link-card">
-              <div className="link-icon">📋</div>
-              <h3>Guidelines</h3>
-              <p>Read our guidelines & policies</p>
-            </Link>
-          </div>
-        </div>
+        
       </div>
     </div>
   );
