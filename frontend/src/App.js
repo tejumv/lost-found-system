@@ -1,5 +1,6 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext"; // Import AuthProvider
+import ProtectedRoute from "./components/ProtectedRoute"; // You'll create this
 
 // Page Components
 import Home from "./pages/Home";
@@ -8,38 +9,35 @@ import Found from "./pages/Found";
 import Items from "./pages/Items";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import ReportItem from "./pages/ReportItem";
-import HelpForm from "./pages/Help";
-import Profile from "./pages/Profile";
 import Footbar from "./components/Footbar";
 import Login1 from "./pages/Login1";
+// ✅ Correct paths based on your folder structure
+import AdminLogin from './admin/pages/AdminLogin';
+import AdminDashboard from './admin/pages/AdminDashboard';
+import PendingItems from './admin/pages/PendingItems';
+import AllItems from './admin/pages/AllItems';
+import Users from './admin/pages/Users';
+import Reports from './admin/pages/Reports';
+import Settings from './admin/pages/Settings';
+import Analytics from './admin/pages/Analytics';
 
 // Navbar Component
 import Navbar from "./components/Navbar";
-
-// --- PRIVATE ROUTE COMPONENT ---
-const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" />;
-};
 
 // --- NEW COMPONENT TO MANAGE CONDITIONAL RENDERING ---
 function AppContent() {
   const location = useLocation();
 
   // Define the path(s) where the Navbar should NOT be shown
-  const hideNavbarPaths = ['/', '/login', '/login1', '/contact', '/contact?firstName=Lindsay&lastName=Doe&email=lindsay.doe%40email.com&state=Select+state&employees=Number+of+Employees'];
+  // We want to hide it on the Home page, which is at path: "/"
+  const hideNavbarPaths = ['/', '/login', '/login1', '/admin/login'];
 
   // Check if the current path is in the exclusion list
-  const shouldShowNavbar = !hideNavbarPaths.includes(location.pathname);
-
-  // Define paths where Footbar should NOT be shown
-  const hideFootbarPaths = ['/dashboard', '/report-item', '/profile'];
-  const shouldShowFootbar = !hideFootbarPaths.includes(location.pathname);
+  const shouldShowNavbar = !hideNavbarPaths.includes(location.pathname) && !location.pathname.startsWith('/admin');
 
   return (
     <>
-      {/* Conditional Rendering for Navbar */}
+      {/* 💡 Conditional Rendering */}
       {shouldShowNavbar && <Navbar />}
 
       <Routes>
@@ -47,45 +45,66 @@ function AppContent() {
         <Route path="/lost" element={<Lost />} />
         <Route path="/found" element={<Found />} />
         <Route path="/items" element={<Items />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/login1" element={<Login1 />} />
-        <Route path="/contact" element={<HelpForm />} />
+        <Route path="/contact" element={<p>Contact Details Page Placeholder</p>} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* PROTECTED ROUTES - Require Login */}
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
 
-        <Route
-          path="/report-item"
-          element={
-            <PrivateRoute>
-              <ReportItem />
-            </PrivateRoute>
-          }
-        />
+        {/* PROTECTED ADMIN ROUTES */}
+        <Route path="/admin/dashboard" element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
 
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/admin/pending" element={
+          <ProtectedRoute>
+            <PendingItems />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/all-items" element={
+          <ProtectedRoute>
+            <AllItems />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/users" element={
+          <ProtectedRoute>
+            <Users />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/reports" element={
+          <ProtectedRoute>
+            <Reports />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/settings" element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/analytics" element={
+          <ProtectedRoute>
+            <Analytics />
+          </ProtectedRoute>
+        } />
 
         {/* Note: Footbar is typically a component, not a route. 
            If you want the Footbar on all pages, it should be placed 
            outside the <Routes> block like the Navbar. */}
+        <Route path="/footbar" element={<Footbar />} />
       </Routes>
 
-      {/* Conditional Rendering for Footbar */}
-      {shouldShowFootbar && <Footbar />}
+      {/* You can optionally render Footbar here if you want it on all pages */}
+      {/* <Footbar /> */}
     </>
   );
 }
@@ -93,9 +112,11 @@ function AppContent() {
 // --- MAIN APP COMPONENT ---
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <AuthProvider> {/* Wrap everything with AuthProvider */}
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
   );
 }
 
