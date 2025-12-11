@@ -135,11 +135,13 @@ export default function Login() {
           >
             <option value="">Select Branch (Optional)</option>
             <option value="Computer Science">Computer Science</option>
-            <option value="Information Technology">Information Technology</option>
+            <option value="Computer Science (AI)">Computer Science (AI)</option>
+            <option value="Automation and Robotics">Automation and Robotics</option>
             <option value="Mechanical">Mechanical</option>
             <option value="Civil">Civil</option>
             <option value="Electrical">Electrical</option>
-            <option value="Electronics">Electronics</option>
+            <option value="Electronics and Communication">Electronics and Communication</option>
+            <option value="Electronics and Communication (VLSI)">Electronics and Communication (VLSI)</option>
           </select>
 
           <select

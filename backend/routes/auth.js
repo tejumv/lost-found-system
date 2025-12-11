@@ -5,7 +5,7 @@ const auth = require("../middleware/auth");
 
 // Public routes
 router.post("/register", authController.registerUser);
-router.post("/login", authController.login);
+router.post("/login", authController.loginUser); // Changed from "login" to "loginUser"
 router.post("/verify-email", authController.verifyEmail);
 router.post("/reset-password", authController.resetPassword);
 

@@ -127,68 +127,68 @@ const Login1 = () => {
     }
   };
 
-const handleResetPassword = async (e) => {
-  e.preventDefault();
-  
-  if (!forgotPasswordData.newPassword.trim()) {
-    setError("Please enter a new password");
-    return;
-  }
-  
-  if (forgotPasswordData.newPassword !== forgotPasswordData.confirmPassword) {
-    setError("Passwords do not match");
-    return;
-  }
-  
-  if (forgotPasswordData.newPassword.length < 6) {
-    setError("Password must be at least 6 characters long");
-    return;
-  }
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
 
-  setError("");
-  setForgotPasswordLoading(true);
-
-  try {
-    const response = await fetch("http://localhost:5000/api/auth/reset-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email: forgotPasswordData.email,
-        newPassword: forgotPasswordData.newPassword
-      })
-    });
-
-    const data = await response.json();
-
-    if (response.ok && data.success) {
-      // IMPORTANT: Clear the login form's password
-      setFormData({
-        ...formData,
-        password: ""  // Clear the old password
-      });
-      
-      setSuccess("Password reset successfully! Please login with your new password.");
-      setTimeout(() => {
-        setShowForgotPassword(false);
-        setForgotPasswordData({
-          email: "",
-          newPassword: "",
-          confirmPassword: ""
-        });
-        setStep(1);
-      }, 3000);
-    } else {
-      setError(data.message || "Failed to reset password. Please try again.");
+    if (!forgotPasswordData.newPassword.trim()) {
+      setError("Please enter a new password");
+      return;
     }
-  } catch (err) {
-    console.error("Reset password error:", err);
-    setError("Server error. Please try again later.");
-  } finally {
-    setForgotPasswordLoading(false);
-  }
-};
+
+    if (forgotPasswordData.newPassword !== forgotPasswordData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (forgotPasswordData.newPassword.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    setError("");
+    setForgotPasswordLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: forgotPasswordData.email,
+          newPassword: forgotPasswordData.newPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // IMPORTANT: Clear the login form's password
+        setFormData({
+          ...formData,
+          password: ""  // Clear the old password
+        });
+
+        setSuccess("Password reset successfully! Please login with your new password.");
+        setTimeout(() => {
+          setShowForgotPassword(false);
+          setForgotPasswordData({
+            email: "",
+            newPassword: "",
+            confirmPassword: ""
+          });
+          setStep(1);
+        }, 3000);
+      } else {
+        setError(data.message || "Failed to reset password. Please try again.");
+      }
+    } catch (err) {
+      console.error("Reset password error:", err);
+      setError("Server error. Please try again later.");
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  };
 
   const toggleForgotPassword = () => {
     setShowForgotPassword(!showForgotPassword);
@@ -235,16 +235,15 @@ const handleResetPassword = async (e) => {
               )}
 
               {success && (
-  <div className="general-error-message success">
-    {success}
-    {success.includes("Password reset successfully") && (
-      <div style={{ fontSize: "14px", marginTop: "5px" }}>
-        Use your new password to login
-      </div>
-    )}
-  </div>
-)}
-              
+                <div className="general-error-message success">
+                  {success}
+                  {success.includes("Password reset successfully") && (
+                    <div style={{ fontSize: "14px", marginTop: "5px" }}>
+                      Use your new password to login
+                    </div>
+                  )}
+                </div>
+              )}
 
               <form className="auth-form" onSubmit={handleLogin}>
                 <div className="input-group">
@@ -297,8 +296,8 @@ const handleResetPassword = async (e) => {
             <>
               <h2 className="auth-title">Reset Password</h2>
               <p className="auth-subtitle">
-                {step === 1 
-                  ? "Enter your email to reset password" 
+                {step === 1
+                  ? "Enter your email to reset password"
                   : "Enter your new password"}
               </p>
 
@@ -335,7 +334,7 @@ const handleResetPassword = async (e) => {
                       <span className="step-arrow">→</span>
                       <span className="step-active">2. New Password</span>
                     </div>
-                    
+
                     <div className="input-group">
                       <input
                         type="password"
@@ -365,28 +364,36 @@ const handleResetPassword = async (e) => {
                 )}
 
                 <div className="forgot-password-buttons">
-                  <button 
-                    className="auth-button" 
-                    type="submit" 
+                  <button
+                    className="auth-button"
+                    type="submit"
                     disabled={forgotPasswordLoading}
                   >
-                    {forgotPasswordLoading 
-                      ? "Processing..." 
-                      : step === 1 
-                        ? "Verify Email" 
+                    {forgotPasswordLoading
+                      ? "Processing..."
+                      : step === 1
+                        ? "Verify Email"
                         : "Reset Password"}
                   </button>
-                  
-                  
-                  
-                  
+
+                  {/* Added Back button for step 2 */}
+                  {step === 2 && (
+                    <button
+                      type="button"
+                      className="back-button"
+                      onClick={handleBackToEmailStep}
+                      disabled={forgotPasswordLoading}
+                    >
+                      Back to Email
+                    </button>
+                  )}
                 </div>
               </form>
 
               <p className="auth-footer-text">
                 Remember your password?{" "}
-                <button 
-                  className="inline-link-btn" 
+                <button
+                  className="inline-link-btn"
                   onClick={toggleForgotPassword}
                 >
                   Login here
