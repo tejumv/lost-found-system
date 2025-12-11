@@ -1,0 +1,36 @@
+<<<<<<< HEAD
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.admin-container {
+  display: flex;
+  flex: 1;
+}
+
+.admin-main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+=======
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.admin-container {
+  display: flex;
+  flex: 1;
+}
+
+.admin-main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+>>>>>>> 0205117 (Completed Admin response)
+}
