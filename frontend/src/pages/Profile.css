@@ -1,7 +1,9 @@
 /* Profile Page Styles */
 .profile-page {
   min-height: 100vh;
-  background: url("kletechbvb_cover.jpeg") no-repeat center center fixed;
+  background: 
+    linear-gradient(rgba(4, 60, 82, 0.3), rgba(6, 38, 113, 0.5)), /* Blue overlay */
+    url("kletechbvb_cover.jpeg") no-repeat center center fixed;
   background-size: cover;
   padding: 20px;
   font-family: "Segoe UI", sans-serif;
