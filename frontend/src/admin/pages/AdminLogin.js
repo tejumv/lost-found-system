@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { adminAuthService } from "../services/adminAuthService";
 import "../styles/Admin.css";
 
 const AdminLogin = () => {
@@ -10,7 +10,6 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,7 +17,7 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const result = await login(email, password);
+      const result = await adminAuthService.login(email, password);
 
       if (result.success) {
         navigate("/admin/dashboard");
@@ -27,7 +26,7 @@ const AdminLogin = () => {
       }
     } catch (err) {
       console.error("Admin login error:", err);
-      setError("Something went wrong. Please try again.");
+      setError("Server error. Please try again.");
     } finally {
       setLoading(false);
     }

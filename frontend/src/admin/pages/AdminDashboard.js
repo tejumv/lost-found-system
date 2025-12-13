@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import AdminLayout from "../layout/AdminLayout";
 import { dashboardService } from "../services/dashboardService";
 import "../styles/Admin.css";
+
 import {
   FaUsers,
   FaBoxOpen,
@@ -15,7 +16,6 @@ import {
   FaExclamationTriangle,
   FaUserShield,
   FaSync,
-  FaExclamationCircle,
   FaHistory,
 } from "react-icons/fa";
 
@@ -30,8 +30,8 @@ const AdminDashboard = () => {
   });
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,14 +57,12 @@ const AdminDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      setError(null);
       setRefreshing(true);
 
-      const [statsData, activityData] = await Promise.all([
-        dashboardService.getDashboardStats(),
-        dashboardService.getRecentActivities(5),
-      ]);
+      const statsData = await dashboardService.getDashboardStats();
+      const activitiesData = await dashboardService.getRecentActivities(8);
 
+      // Map fields returned by backend
       setStats({
         totalUsers: statsData.totalUsers || 0,
         lostItems: statsData.lostItems || 0,
@@ -73,10 +71,9 @@ const AdminDashboard = () => {
         pendingApproval: statsData.pendingApproval || 0,
       });
 
-      setRecentActivity(activityData?.activities || []);
+      setRecentActivity(activitiesData.activities || []);
     } catch (err) {
-      console.error(err);
-      setError("Failed to load dashboard data.");
+      console.error("Dashboard error:", err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -87,8 +84,6 @@ const AdminDashboard = () => {
     localStorage.clear();
     navigate("/admin/login");
   };
-
-  const handleQuickAction = (path) => navigate(path);
 
   const StatCard = ({ title, value, icon: Icon, color, onClick }) => (
     <div
@@ -125,6 +120,7 @@ const AdminDashboard = () => {
             </h1>
             <p>Welcome back, {admin?.name}</p>
           </div>
+
           <div className="header-actions">
             <button onClick={fetchDashboardData} disabled={refreshing}>
               <FaSync /> Refresh
@@ -135,33 +131,27 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {error && (
-          <div className="alert alert-warning">
-            <FaExclamationCircle /> {error}
-          </div>
-        )}
-
         <div className="stats-grid">
           <StatCard
             title="Total Users"
             value={stats.totalUsers}
             icon={FaUsers}
             color="#3498db"
-            onClick={() => handleQuickAction("/admin/users")}
+            onClick={() => navigate("/admin/users")}
           />
           <StatCard
             title="Lost Items"
             value={stats.lostItems}
             icon={FaExclamationTriangle}
             color="#e74c3c"
-            onClick={() => handleQuickAction("/admin/all-items")}
+            onClick={() => navigate("/admin/all-items")}
           />
           <StatCard
             title="Found Items"
             value={stats.foundItems}
             icon={FaBoxOpen}
             color="#2ecc71"
-            onClick={() => handleQuickAction("/admin/all-items")}
+            onClick={() => navigate("/admin/all-items")}
           />
           <StatCard
             title="Resolved"
@@ -174,7 +164,7 @@ const AdminDashboard = () => {
             value={stats.pendingApproval}
             icon={FaHistory}
             color="#f39c12"
-            onClick={() => handleQuickAction("/admin/pending")}
+            onClick={() => navigate("/admin/pending")}
           />
         </div>
 
@@ -182,32 +172,37 @@ const AdminDashboard = () => {
           <h3>
             <FaHistory /> Recent Activity
           </h3>
-          {recentActivity.length === 0 ? (
-            <p>No recent activity</p>
+          {recentActivity && recentActivity.length > 0 ? (
+            <ul className="activity-list">
+              {recentActivity.map((act) => (
+                <li key={act._id || act.id} className="activity-item">
+                  <div className="activity-meta">
+                    <strong>{act.type || act.action || 'Activity'}</strong>
+                    <span className="activity-time">{new Date(act.createdAt).toLocaleString()}</span>
+                  </div>
+                  <div className="activity-desc">{act.message || act.description || JSON.stringify(act)}</div>
+                </li>
+              ))}
+            </ul>
           ) : (
-            recentActivity.map((a, i) => (
-              <div key={i} className="activity-item">
-                <p>{a.description}</p>
-                <small>{a.time}</small>
-              </div>
-            ))
+            <p>No recent activity</p>
           )}
         </div>
 
         <div className="quick-actions">
-          <button onClick={() => handleQuickAction("/admin/users")}>
+          <button onClick={() => navigate("/admin/users")}>
             <FaUsers /> Users
           </button>
-          <button onClick={() => handleQuickAction("/admin/all-items")}>
+          <button onClick={() => navigate("/admin/all-items")}>
             <FaBoxOpen /> Items
           </button>
-          <button onClick={() => handleQuickAction("/admin/reports")}>
+          <button onClick={() => navigate("/admin/reports")}>
             <FaChartBar /> Reports
           </button>
-          <button onClick={() => handleQuickAction("/admin/analytics")}>
+          <button onClick={() => navigate("/admin/analytics")}>
             <FaChartLine /> Analytics
           </button>
-          <button onClick={() => handleQuickAction("/admin/settings")}>
+          <button onClick={() => navigate("/admin/settings")}>
             <FaCog /> Settings
           </button>
         </div>

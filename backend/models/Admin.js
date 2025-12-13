@@ -63,10 +63,9 @@ adminSchema.methods.getSignedJwtToken = function () {
   return jwt.sign(
     { id: this._id, role: this.role },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRE || "24h" }
+    { expiresIn: "24h" }
   );
 };
-
 // Match admin entered password to hashed password in database
 adminSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);

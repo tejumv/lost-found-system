@@ -1,23 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const adminController = require("../controllers/adminController");
 const adminMiddleware = require("../middleware/admin");
 
-// Public routes
-router.post("/login", adminController.loginAdmin);
+const {
+  loginAdmin,
+  getDashboardStats,
+  getRecentActivities,
+  getAllUsers,
+  getAllItems,
+  updateItemStatus
+} = require("../controllers/adminController");
 
-// Apply admin middleware to all routes below
-router.use(adminMiddleware);
+router.post("/login", loginAdmin);
 
-// Dashboard routes
-router.get("/dashboard/stats", adminController.getDashboardStats);
-router.get("/dashboard/activities", adminController.getRecentActivities);
+router.get("/dashboard/stats", adminMiddleware, getDashboardStats);
+router.get("/dashboard/activities", adminMiddleware, getRecentActivities);
 
-// User management
-router.get("/users", adminController.getAllUsers);
+router.get("/users", adminMiddleware, getAllUsers);
 
-// Item management
-router.get("/items", adminController.getAllItems);
-router.put("/items/:id/status", adminController.updateItemStatus);
+router.get("/items", adminMiddleware, getAllItems);
+router.put("/items/:id/status", adminMiddleware, updateItemStatus);
 
 module.exports = router;

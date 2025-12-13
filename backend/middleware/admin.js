@@ -3,20 +3,19 @@ const Admin = require("../models/Admin");
 
 const adminMiddleware = async (req, res, next) => {
   try {
-    // Get token from header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
         message: "No authentication token, access denied",
       });
     }
 
-    // Verify token
+    const token = authHeader.split(" ")[1];
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Find admin by id
     const admin = await Admin.findById(decoded.id).select("-password");
 
     if (!admin) {
@@ -26,23 +25,13 @@ const adminMiddleware = async (req, res, next) => {
       });
     }
 
-    // Check if admin is active
-    if (!admin.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: "Admin account is deactivated",
-      });
-    }
-
-    // Attach admin to request
     req.admin = admin;
-    req.token = token;
     next();
   } catch (error) {
-    console.error("Admin middleware error:", error);
+    console.error("Admin middleware error:", error.message);
     return res.status(401).json({
       success: false,
-      message: "Token is not valid",
+      message: "Invalid or expired admin token",
     });
   }
 };
