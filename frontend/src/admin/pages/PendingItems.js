@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import AdminLayout from '../layout/AdminLayout';
-import { adminService } from '../services/adminService';
-import { FaCheck, FaTimes, FaEye } from 'react-icons/fa';
-import '../styles/Admin.css';
+import AdminLayout from "../layout/AdminLayout";
+import { adminService } from "../services/adminService";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import "../styles/Admin.css";
 
 function PendingItems() {
   const [items, setItems] = useState([]);
@@ -12,12 +12,11 @@ function PendingItems() {
   const fetchPendingItems = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await adminService.getAllItems({ status: 'pending' });
-      // Service now returns data directly: { items: [...], pagination: {...} }
+      const response = await adminService.getAllItems({ status: "pending" });
       setItems(response.items || []);
     } catch (err) {
-      setError('Failed to fetch pending items');
       console.error(err);
+      setError("Failed to fetch pending items");
     } finally {
       setLoading(false);
     }
@@ -29,23 +28,23 @@ function PendingItems() {
 
   const handleApprove = async (id) => {
     try {
-      await adminService.updateItemStatus(id, 'approved', 'Approved by admin');
+      await adminService.updateItemStatus(id, "approved", "Approved by admin");
       fetchPendingItems();
     } catch (err) {
-      console.error('Error approving item:', err);
-      alert('Failed to approve item');
+      console.error("Error approving item:", err);
+      alert("Failed to approve item");
     }
   };
 
   const handleReject = async (id) => {
-    if (window.confirm('Are you sure you want to reject this item?')) {
-      try {
-        await adminService.updateItemStatus(id, 'rejected', 'Rejected by admin');
-        fetchPendingItems();
-      } catch (err) {
-        console.error('Error rejecting item:', err);
-        alert('Failed to reject item');
-      }
+    if (!window.confirm("Are you sure you want to reject this item?")) return;
+
+    try {
+      await adminService.updateItemStatus(id, "rejected", "Rejected by admin");
+      fetchPendingItems();
+    } catch (err) {
+      console.error("Error rejecting item:", err);
+      alert("Failed to reject item");
     }
   };
 
@@ -73,15 +72,24 @@ function PendingItems() {
                 ) : (
                   <div className="placeholder-image">No Image</div>
                 )}
-                <span className={`badge badge-${item.category}`}>{item.category}</span>
+                <span className={`badge badge-${item.category}`}>
+                  {item.category}
+                </span>
               </div>
+
               <div className="item-card-content">
                 <h3>{item.title}</h3>
                 <p className="item-desc">{item.description}</p>
+
                 <div className="item-meta">
-                  <span>Reported by: {item.postedBy?.name || 'Unknown'}</span>
-                  <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+                  <span>
+                    Reported by: {item.postedBy?.name || "Unknown"}
+                  </span>
+                  <span>
+                    {new Date(item.createdAt).toLocaleDateString()}
+                  </span>
                 </div>
+
                 <div className="item-actions">
                   <button
                     className="btn btn-success btn-sm"
@@ -106,4 +114,3 @@ function PendingItems() {
 }
 
 export default PendingItems;
-

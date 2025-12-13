@@ -1,6 +1,6 @@
 import React from "react";
-import { FaUserCircle } from 'react-icons/fa';
-import '../styles/Admin.css';
+import { FaUserCircle } from "react-icons/fa";
+import "../styles/Admin.css";
 
 function AdminNavbar() {
   const adminData = JSON.parse(localStorage.getItem("adminData") || "{}");
@@ -12,7 +12,7 @@ function AdminNavbar() {
       </div>
       <div className="navbar-actions">
         <div className="admin-profile">
-          <span className="admin-name">{adminData.name || 'Admin'}</span>
+          <span className="admin-name">{adminData.name || "Admin"}</span>
           <FaUserCircle size={24} />
         </div>
       </div>
@@ -21,4 +21,3 @@ function AdminNavbar() {
 }
 
 export default AdminNavbar;
-

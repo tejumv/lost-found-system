@@ -1,4 +1,4 @@
-/* Background image chosen by you */
+/* Login.css - Create Account Page */
 .login-page {
   background: url("kletechbvb_cover.jpeg") no-repeat center center fixed;
   background-size: cover;
@@ -7,119 +7,167 @@
   justify-content: center;
   align-items: center;
   font-family: "Segoe UI", sans-serif;
-  
-  background-color: #f0f0f5; 
-  /* === ADDED FOR ABSOLUTE POSITIONING OF LOGO === */
-  position: relative; 
-  /* ============================================== */
+  position: relative;
 }
 
 /* Light theme overlay adjustment */
 .login-page::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.4); 
-    z-index: 0;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 0;
 }
 
-/* === LOGO STYLES - NOW POSITIONED RELATIVE TO THE PAGE === */
+/* Logo Styles */
 .logo-container {
   position: absolute;
-  top: 20px; /* Adjust spacing from the top of the page */
-  left: 20px; /* Adjust spacing from the left of the page */
-  z-index: 10; /* Ensure the logo is above the overlay and form */
+  top: 20px;
+  left: 20px;
+  z-index: 10;
   padding: 0;
   margin: 0;
 }
 
 .form-logo {
-  width: 200px; /* Increased size slightly for better visibility on the page */
+  width: 180px;
   height: auto;
-  border-radius: 0%; /* Optional: if you want a circular logo */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Added a subtle shadow to make it stand out */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-/* ======================================================= */
 
+/* Form Container */
 .form-container {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px 40px;
   border-radius: 12px;
-  width: 450px; 
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+  width: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   text-align: center;
-  position: relative; 
-  z-index: 1; 
+  position: relative;
+  z-index: 1;
 }
 
 .form-container h2 {
   margin-bottom: 10px;
-  color: #1f3762; 
+  color: #1f3762;
+  font-size: 1.8rem;
 }
 
 .form-container p {
   font-size: 14px;
-  color: #4c628f; 
-  margin-bottom: 20px;
+  color: #4c628f;
+  margin-bottom: 25px;
 }
 
 .form-container input,
 .form-container select {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0;
+  padding: 12px 15px;
+  margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
 }
 
+.form-container input:focus,
+.form-container select:focus {
+  outline: none;
+  border-color: #0a99e6;
+  box-shadow: 0 0 0 3px rgba(10, 153, 230, 0.1);
+}
+
+/* Mobile Input */
 .mobile-input {
   display: flex;
   align-items: center;
+  margin: 10px 0;
 }
 
 .mobile-input span {
-  background: #eee; 
-  padding: 10px;
+  background: #eee;
+  padding: 12px 15px;
   border: 1px solid #ccc;
   border-right: none;
   border-radius: 6px 0 0 6px;
-  white-space: nowrap; 
+  white-space: nowrap;
+  color: #4c628f;
+  font-size: 14px;
+  height: 46px;
+  display: flex;
+  align-items: center;
 }
 
 .mobile-input input {
   flex: 1;
   border-radius: 0 6px 6px 0;
+  margin: 0;
 }
 
+/* Button */
 button {
   width: 100%;
-  padding: 12px;
-  background: #0a99e6; 
+  padding: 14px;
+  background: #0a99e6;
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 15px;
+  font-family: "Segoe UI", sans-serif;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-  background: #087bc4; 
+  background: #087bc4;
 }
 
+button:disabled {
+  background: #87c3e6;
+  cursor: not-allowed;
+}
+
+/* Messages */
 .message {
   margin-top: 15px;
-  color: green;
-  font-weight: bold;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
 }
 
 .footer-message {
-    color: #4c628f; 
-    font-size: 12px;
-    margin-top: 5px;
-    font-weight: 500;
+  color: #4c628f;
+  font-size: 14px;
+  margin-top: 20px;
+  font-weight: 500;
+}
+
+.login-link {
+  color: #0a99e6;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.login-link:hover {
+  color: #087bc4;
 }

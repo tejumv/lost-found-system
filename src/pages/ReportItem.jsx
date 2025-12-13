@@ -48,12 +48,7 @@ const ReportItem = () => {
         }
 
         try {
-<<<<<<< Updated upstream
             const response = await axios.post('http://localhost:5000/api/items/add', data, {
-=======
-            // TODO: Update with your actual backend API endpoint
-            await axios.post('http://localhost:5000/api/items/report', data, {
->>>>>>> Stashed changes
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',

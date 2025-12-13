@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import AdminLayout from '../layout/AdminLayout';
 import { adminService } from '../services/adminService';
-import { FaSearch, FaUser, FaEnvelope, FaBan, FaCheck } from 'react-icons/fa';
+import { FaSearch, FaUser, FaEnvelope, FaBan } from 'react-icons/fa';
 import '../styles/Admin.css';
 
 function Users() {
@@ -19,7 +19,7 @@ function Users() {
         try {
             setLoading(true);
             const response = await adminService.getAllUsers(filters);
-            // Service now returns data directly: { users: [...], pagination: {...} }
+            // Service returns: { users, pagination }
             setUsers(response.users || []);
             setPagination(response.pagination || null);
         } catch (err) {
@@ -50,9 +50,13 @@ function Users() {
                             type="text"
                             placeholder="Search users..."
                             value={filters.search}
-                            onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                            onChange={(e) =>
+                                setFilters(prev => ({ ...prev, search: e.target.value }))
+                            }
                         />
-                        <button type="submit" className="btn btn-primary"><FaSearch /></button>
+                        <button type="submit" className="btn btn-primary">
+                            <FaSearch />
+                        </button>
                     </form>
                 </div>
             </div>
@@ -94,7 +98,12 @@ function Users() {
                                         <span className="badge badge-success">Active</span>
                                     </td>
                                     <td>
-                                        <button className="btn-icon text-danger" title="Block User"><FaBan /></button>
+                                        <button
+                                            className="btn-icon text-danger"
+                                            title="Block User"
+                                        >
+                                            <FaBan />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -107,14 +116,20 @@ function Users() {
                 <div className="pagination">
                     <button
                         disabled={pagination.page === 1}
-                        onClick={() => setFilters(prev => ({ ...prev, page: prev.page - 1 }))}
+                        onClick={() =>
+                            setFilters(prev => ({ ...prev, page: prev.page - 1 }))
+                        }
                     >
                         Previous
                     </button>
-                    <span>Page {pagination.page} of {pagination.pages}</span>
+                    <span>
+                        Page {pagination.page} of {pagination.pages}
+                    </span>
                     <button
                         disabled={pagination.page === pagination.pages}
-                        onClick={() => setFilters(prev => ({ ...prev, page: prev.page + 1 }))}
+                        onClick={() =>
+                            setFilters(prev => ({ ...prev, page: prev.page + 1 }))
+                        }
                     >
                         Next
                     </button>

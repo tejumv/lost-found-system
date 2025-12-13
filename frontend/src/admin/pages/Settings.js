@@ -34,6 +34,7 @@ function Settings() {
                 <form onSubmit={handleSubmit} className="settings-form">
                     <div className="settings-section">
                         <h3><FaCog /> General Settings</h3>
+
                         <div className="form-group">
                             <label>Site Name</label>
                             <input
@@ -44,6 +45,7 @@ function Settings() {
                                 className="form-control"
                             />
                         </div>
+
                         <div className="form-group checkbox-group">
                             <label>
                                 <input
@@ -55,6 +57,7 @@ function Settings() {
                                 Enable Email Notifications
                             </label>
                         </div>
+
                         <div className="form-group checkbox-group">
                             <label>
                                 <input
@@ -66,6 +69,7 @@ function Settings() {
                                 Auto-approve Items (Not Recommended)
                             </label>
                         </div>
+
                         <div className="form-group checkbox-group">
                             <label>
                                 <input
@@ -82,7 +86,9 @@ function Settings() {
                     <div className="settings-section">
                         <h3><FaLock /> Security</h3>
                         <div className="form-group">
-                            <button type="button" className="btn btn-secondary">Change Admin Password</button>
+                            <button type="button" className="btn btn-secondary">
+                                Change Admin Password
+                            </button>
                         </div>
                     </div>
 

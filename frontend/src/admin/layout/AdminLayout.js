@@ -1,7 +1,7 @@
-import React from 'react';
-import AdminNavbar from '../components/AdminNavbar';
-import AdminSidebar from '../components/AdminSidebar';
-import './AdminLayout.css';
+import React from "react";
+import AdminNavbar from "../components/AdminNavbar";
+import AdminSidebar from "../components/AdminSidebar";
+import "./AdminLayout.css";
 
 const AdminLayout = ({ children }) => {
   return (
@@ -9,9 +9,7 @@ const AdminLayout = ({ children }) => {
       <AdminNavbar />
       <div className="admin-container">
         <AdminSidebar />
-        <main className="admin-main-content">
-          {children}
-        </main>
+        <main className="admin-main-content">{children}</main>
       </div>
     </div>
   );

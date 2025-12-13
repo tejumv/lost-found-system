@@ -1,19 +1,43 @@
 const mongoose = require("mongoose");
 
-const itemSchema = new mongoose.Schema({
-  title: { type: String, required: true, trim: true },
-  description: { type: String, required: true, trim: true },
-  category: { type: String, required: true, enum: ["lost", "found"] },
-  status: { type: String, enum: ["pending", "found", "returned"], default: "pending" },
-  location: { type: String, required: true, trim: true },
-  date: { type: Date, required: true },
-  image: { type: String, default: "" },
-  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  claimedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  contactInfo: { type: String, required: true }
-}, { timestamps: true });
+const itemSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String, required: true },
 
-// Enable search
-itemSchema.index({ title: "text", description: "text", location: "text" });
+    category: {
+      type: String,
+      enum: ["lost", "found"],
+      required: true,
+    },
+
+    itemType: { type: String },
+    location: { type: String },
+    exactLocation: { type: String },
+    date: { type: Date },
+    contactInfo: { type: String },
+
+    color: String,
+    brand: String,
+    image: String,
+
+    // ✅ CORRECT FIELD (used everywhere)
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    userName: String,
+    userEmail: String,
+
+    status: {
+      type: String,
+      enum: ["pending", "matched", "claimed", "returned", "archived"],
+      default: "pending",
+    },
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Item", itemSchema);

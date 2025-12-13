@@ -82,24 +82,7 @@ const Home = () => {
                         {/* Settings Dropdown Menu */}
                         {isSettingsMenuOpen && (
                             <div className="settings-dropdown-menu">
-                                <div 
-                                    className="settings-option" 
-                                    onClick={(e) => { e.stopPropagation(); handleSettingsClick('Profile'); }}
-                                >
-                                    Account Profile
-                                </div>
-                                <div 
-                                    className="settings-option" 
-                                    onClick={(e) => { e.stopPropagation(); handleSettingsClick('Language'); }}
-                                >
-                                    Language
-                                </div>
-                                <div 
-                                    className="settings-option" 
-                                    onClick={(e) => { e.stopPropagation(); handleSettingsClick('Accessibility'); }}
-                                >
-                                    Accessibility
-                                </div>
+                                
                                 {/* 🌟 HELP & SUPPORT OPTION */}
                                 <div 
                                     className="settings-option" 

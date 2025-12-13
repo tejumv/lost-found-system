@@ -1,159 +1,309 @@
-/* src/pages/Login1.css */
-
-/* Background image chosen by you */
+/* Login1.css - Login Page */
 .auth-page-container {
-    background: url("kletechbvb_cover.jpeg") no-repeat center center fixed;
-    background-size: cover;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: "Segoe UI", sans-serif;
-    
-    background-color: #f0f0f5; 
-    /* === ADDED FOR ABSOLUTE POSITIONING OF LOGO === */
-    position: relative; 
-    /* ============================================== */
+  background: url("kletechbvb_cover.jpeg") no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", sans-serif;
+  position: relative;
 }
 
 /* Light theme overlay adjustment */
-/* Renamed from .login-page::before for consistency */
-.auth-page-container::before { 
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.4); /* Light overlay to mute the background */
-    z-index: 0;
+.auth-page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 0;
+}
+/* Forgot Password Styles */
+.forgot-password-link {
+  text-align: right;
+  margin-bottom: 20px;
+  margin-top: -10px;
 }
 
-/* === LOGO STYLES - NOW POSITIONED RELATIVE TO THE PAGE === */
+.forgot-password-btn {
+  background: none;
+  border: none;
+  color: #0066cc;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: inherit;
+}
+
+.forgot-password-btn:hover {
+  color: #0052a3;
+}
+
+.forgot-password-btn:disabled {
+  color: #999;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.forgot-password-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.back-to-login-btn {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.back-btn {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.back-to-login-btn:hover,
+.back-btn:hover {
+  background: #e0e0e0;
+  border-color: #ccc;
+}
+
+.back-to-login-btn:disabled,
+.back-btn:disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.inline-link-btn {
+  background: none;
+  border: none;
+  color: #0066cc;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: inherit;
+  display: inline;
+}
+
+.inline-link-btn:hover {
+  color: #0052a3;
+}
+
+/* Step Indicator */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.step-active {
+  color: #0066cc;
+  font-weight: 500;
+}
+
+.step-arrow {
+  color: #999;
+}
+/* Logo Styles */
 .logo-container {
-    position: absolute;
-    top: 20px; /* Adjust spacing from the top of the page */
-    left: 20px; /* Adjust spacing from the left of the page */
-    z-index: 10; /* Ensure the logo is above the overlay and form */
-    padding: 0;
-    margin: 0;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  padding: 0;
+  margin: 0;
 }
 
 .form-logo {
-    width: 200px; /* Increased size slightly for better visibility on the page */
-    height: auto;
-    border-radius: 0%; 
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Added a subtle shadow to make it stand out */
+  width: 180px;
+  height: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-/* ======================================================= */
 
-/* Renamed from .form-container */
+/* Auth Card Wrapper */
 .auth-card-wrapper {
-    /* Use wrapper to control max-width and center, if necessary */
-    z-index: 1; /* Ensure card is above the overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 1;
+  position: relative;
 }
 
-/* Renamed from .form-container */
+/* Auth Card */
 .auth-card {
-    background: rgba(255, 255, 255, 0.95); /* Adjusted from 0.9 to 0.95 for a slightly whiter look */
-    padding: 30px 40px; /* Increased padding slightly */
-    border-radius: 12px;
-    width: 450px; 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
-    text-align: center;
-    position: relative; 
-    z-index: 1; 
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px 40px;
+  border-radius: 12px;
+  width: 420px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  text-align: center;
 }
 
-/* Renamed from .form-container h2 */
-.auth-card h2 {
-    margin-bottom: 10px;
-    color: #1f3762; 
+.auth-title {
+  margin-bottom: 10px;
+  color: #1f3762;
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
-/* Renamed from .form-container p */
 .auth-subtitle {
-    font-size: 14px;
-    color: #4c628f; 
-    margin-bottom: 20px;
+  font-size: 14px;
+  color: #4c628f;
+  margin-bottom: 25px;
 }
 
-.auth-form input,
-.auth-form select {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    box-sizing: border-box; /* Essential for padding to work with 100% width */
+/* Auth Form */
+.auth-form {
+  width: 100%;
 }
 
-.mobile-input {
-    display: flex;
-    align-items: center;
+.input-group {
+  margin-bottom: 20px;
+  width: 100%;
 }
 
-.mobile-input span {
-    background: #eee; 
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-right: none;
-    border-radius: 6px 0 0 6px;
-    white-space: nowrap; 
-    color: #4c628f; /* Added color for prefix text */
-    font-size: 14px; /* Ensure font size matches input */
-    height: 38px; /* Match height of input padding */
-    display: flex;
-    align-items: center;
+.auth-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* Target the input inside the mobile group */
-.mobile-input input {
-    flex: 1;
-    border-radius: 0 6px 6px 0;
-    margin: 8px 0; /* Match vertical margin of other inputs */
+.auth-input:focus {
+  outline: none;
+  border-color: #0a99e6;
+  box-shadow: 0 0 0 3px rgba(10, 153, 230, 0.1);
 }
 
+.auth-input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Auth Button */
 .auth-button {
-    width: 100%;
-    padding: 12px;
-    background: #0a99e6; 
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
+  width: 100%;
+  padding: 14px;
+  background: #0a99e6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  font-family: "Segoe UI", sans-serif;
+  transition: background 0.3s ease;
 }
 
 .auth-button:hover {
-    background: #087bc4; 
+  background: #087bc4;
 }
 
-.general-error-message, .success-message {
-    margin-top: 15px;
-    color: #b00020; /* Default error color */
-    font-weight: bold;
-    font-size: 14px;
+.auth-button:disabled {
+  background: #87c3e6;
+  cursor: not-allowed;
 }
 
-.success-message {
-    color: green;
+/* Message Styles */
+.general-error-message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
 }
 
-/* Renamed from .footer-message to align with JSX */
+.general-error-message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.general-error-message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Auth Footer */
 .auth-footer-text {
-    color: #4c628f; 
-    font-size: 12px;
-    margin-top: 5px;
-    font-weight: 500;
+  color: #4c628f;
+  font-size: 14px;
+  margin-top: 20px;
+  font-weight: 500;
 }
-/* Reusing .error-message from previous version for field-specific errors */
-.error-message {
-    color: #b00020;
-    font-size: 0.85rem;
-    margin-top: 5px;
-    margin-left: 5px;
-    text-align: left;
+
+.auth-footer-text a {
+  color: #0a99e6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-footer-text a:hover {
+  color: #087bc4;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-card {
+    width: 90%;
+    margin: 20px;
+    padding: 25px;
+  }
+  
+  .form-logo {
+    width: 150px;
+  }
+  
+  .logo-container {
+    top: 15px;
+    left: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 20px;
+  }
+  
+  .auth-title {
+    font-size: 1.5rem;
+  }
+  
+  .auth-input, .auth-button {
+    padding: 10px 12px;
+  }
 }

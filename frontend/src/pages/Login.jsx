@@ -13,9 +13,12 @@ export default function Login() {
     email: "",
     mobile: "",
     password: "",
+    branch: "",
+    year: ""
   });
 
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,26 +49,48 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
 
     if (!validateForm()) return;
+
+    setLoading(true);
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
-        formData
+        {
+          ...formData,
+          phone: formData.mobile
+        }
       );
 
-      // Store token
-      localStorage.setItem("token", response.data.token);
+      if (response.data.success) {
+        // Store token and user data
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userName", response.data.user.name);
+        localStorage.setItem("userEmail", response.data.user.email);
+        localStorage.setItem("userPhone", response.data.user.phone || "");
+        localStorage.setItem("userEnrollment", response.data.user.enrollment || "");
+        localStorage.setItem("userSemester", response.data.user.semester || "");
+        localStorage.setItem("userBranch", response.data.user.branch || "");
+        localStorage.setItem("userYear", response.data.user.year || "");
 
-      setMessage("Account Created Successfully!");
+        setMessage("Account Created Successfully!");
 
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1500);
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
+      } else {
+        setMessage(response.data.message || "Registration failed");
+      }
     } catch (error) {
       console.error(error);
-      setMessage("Registration Failed. Try again!");
+      setMessage(
+        error.response?.data?.message ||
+        "Registration Failed. Try again!"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,22 +102,23 @@ export default function Login() {
 
       <div className="form-container">
         <h2>Create Account</h2>
-        <p>Create a great platform for managing your cases & clients</p>
+        <p>Register for the Lost & Found Portal</p>
 
         <form onSubmit={handleSubmit}>
-
           <input
             type="text"
             name="name"
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
+            required
           />
 
           <select
             name="semester"
             value={formData.semester}
             onChange={handleChange}
+            required
           >
             <option value="">Select Semester</option>
             {[...Array(8)].map((_, i) => (
@@ -102,12 +128,41 @@ export default function Login() {
             ))}
           </select>
 
+          <select
+            name="branch"
+            value={formData.branch}
+            onChange={handleChange}
+          >
+            <option value="">Select Branch (Optional)</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Computer Science (AI)">Computer Science (AI)</option>
+            <option value="Automation and Robotics">Automation and Robotics</option>
+            <option value="Mechanical">Mechanical</option>
+            <option value="Civil">Civil</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Electronics and Communication">Electronics and Communication</option>
+            <option value="Electronics and Communication (VLSI)">Electronics and Communication (VLSI)</option>
+          </select>
+
+          <select
+            name="year"
+            value={formData.year}
+            onChange={handleChange}
+          >
+            <option value="">Select Year (Optional)</option>
+            <option value="First Year">First Year</option>
+            <option value="Second Year">Second Year</option>
+            <option value="Third Year">Third Year</option>
+            <option value="Fourth Year">Fourth Year</option>
+          </select>
+
           <input
             type="email"
             name="email"
             placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
+            required
           />
 
           <div className="mobile-input">
@@ -118,22 +173,41 @@ export default function Login() {
               placeholder="Mobile Number"
               value={formData.mobile}
               onChange={handleChange}
+              required
+              maxLength="10"
             />
           </div>
 
           <input
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder="Password (min 6 characters)"
             value={formData.password}
             onChange={handleChange}
+            required
           />
 
-          <button type="submit">Create Account</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Creating Account..." : "Create Account"}
+          </button>
         </form>
 
-        {message && <p className="message">{message}</p>}
-        <p className="footer-message">All fields are required!</p>
+        {message && (
+          <p className={`message ${message.includes("Success") ? "success" : "error"}`}>
+            {message}
+          </p>
+        )}
+
+        <p className="footer-message">
+          Already have an account?{" "}
+          <span
+            className="login-link"
+            onClick={() => navigate("/login1")}
+            style={{ color: "#4f46e5", cursor: "pointer", textDecoration: "underline" }}
+          >
+            Login here
+          </span>
+        </p>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css'; // Importing the final CSS styles
-import collegeLogo from '../assets/logo.png'; // Assuming your college logo path
+import collegeLogo from '../assets/idVTKeb2gc_logos.jpeg'; // Assuming your college logo path
 
 const Navbar = () => {
     const navigate = useNavigate();

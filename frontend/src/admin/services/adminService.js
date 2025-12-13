@@ -1,41 +1,30 @@
-import api from './api';
+import api from "./api";
 
 export const adminService = {
-  // User Management
-  getAllUsers: async (params) => {
-    try {
-      const response = await api.get('/admin/users', { params });
-      // Backend returns { success: true, data: { users: [...], pagination: {...} } }
-      return response.data.data || response.data;
-    } catch (error) {
-      throw error;
+  // Accept optional params (filters, pagination) and return normalized shape
+  getAllUsers: async (params = {}) => {
+    const res = await api.get("/admin/users", { params });
+    // backend returns: { success: true, data: [ ...users ] }
+    const data = res.data.data;
+    // Normalize to { users, pagination } for frontend expectations
+    if (Array.isArray(data)) {
+      return { users: data, pagination: null };
     }
+    return data;
   },
 
-  // Item Management
-  getAllItems: async (params) => {
-    try {
-      const response = await api.get('/admin/items', { params });
-      // Backend returns { success: true, data: { items: [...], pagination: {...} } }
-      return response.data.data || response.data;
-    } catch (error) {
-      throw error;
-    }
+  // Accept params to request filtered/paginated items
+  getAllItems: async (params = {}) => {
+    const res = await api.get("/admin/items", { params });
+    // backend returns: { success: true, data: { items } }
+    const data = res.data.data || {};
+    return data;
   },
 
-  updateItemStatus: async (id, status, adminNotes) => {
-    try {
-      const response = await api.put(`/admin/items/${id}/status`, { status, adminNotes });
-      // Backend returns { success: true, data: item }
-      return response.data.data || response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Settings (Placeholder for now)
-  updateSettings: async (settings) => {
-    // Implement when backend supports it
-    return { success: true };
+  // Update item status by sending a consistent payload { status, note }
+  updateItemStatus: async (id, status, note = "") => {
+    const payload = { status, note };
+    const res = await api.put(`/admin/items/${id}/status`, payload);
+    return res.data.data;
   }
 };

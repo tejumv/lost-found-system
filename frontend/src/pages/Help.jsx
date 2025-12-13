@@ -23,53 +23,49 @@ const HelpForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.name.trim() || !formData.email.trim() || !formData.query.trim()) {
+      setMessage('❌ Please fill in all fields');
+      setTimeout(() => setMessage(''), 5000);
+      return;
+    }
+    
     setLoading(true);
     setMessage('');
     
     try {
-      // Send to backend API
-      const response = await fetch('http://localhost:5000/api/send-help-email', {
+      // Using Formspree - REPLACE THIS WITH YOUR FORMSPREE URL
+      const formspreeUrl = 'https://formspree.io/f/myzrbgjv';
+      
+      const response = await fetch(formspreeUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.query,
+          _replyto: formData.email, // This ensures reply goes to user
+          _subject: `Help Request from ${formData.name}` // Email subject
+        })
       });
 
-      const data = await response.json();
-      
-      if (data.success) {
-        setMessage('✅ Message sent successfully! We will contact you soon.');
+      if (response.ok) {
+        setMessage('✅ Message sent successfully! We will reply to your email soon.');
         setFormData({ name: '', email: '', query: '' });
         
-        // Clear success message after 5 seconds
         setTimeout(() => {
           setMessage('');
         }, 5000);
       } else {
-        // Fallback to mailto if backend fails
-        const subject = `Help Request from ${formData.name}`;
-        const body = `
-Name: ${formData.name}
-Email: ${formData.email}
-Query: ${formData.query}
-        `.trim();
-        const mailtoLink = `mailto:01fe23bci044@kletech.ac.in,01fe23bci041@kletech.ac.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.open(mailtoLink, '_blank');
-        setMessage('⚠️ Using alternative method... Please send the email that opened.');
+        setMessage('❌ Failed to send message. Please try again.');
+        setTimeout(() => setMessage(''), 5000);
       }
     } catch (error) {
       console.error('Error:', error);
-      // Fallback to mailto on connection error
-      const subject = `Help Request from ${formData.name}`;
-      const body = `
-Name: ${formData.name}
-Email: ${formData.email}
-Query: ${formData.query}
-      `.trim();
-      const mailtoLink = `mailto:01fe23bci044@kletech.ac.in,01fe23bci041@kletech.ac.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(mailtoLink, '_blank');
-      setMessage('⚠️ Opening email client... Please send the email that opened.');
+      setMessage('❌ Network error. Please check your connection.');
+      setTimeout(() => setMessage(''), 5000);
     } finally {
       setLoading(false);
     }
@@ -77,24 +73,21 @@ Query: ${formData.query}
 
   return (
     <div className="help-page-wrapper">
-      {/* Full-width blue header */}
       <div className="full-width-header">
         <h1>Need Help? Contact Us</h1>
       </div>
       
-      {/* Main content */}
       <div className="help-page-content">
         <form onSubmit={handleSubmit} className="simple-form">
-          {/* Status Message */}
           {message && (
-            <div className={`status-message ${message.includes('✅') ? 'success' : 'warning'}`}>
+            <div className={`status-message ${
+              message.includes('✅') ? 'success' : 'error'
+            }`}>
               {message}
             </div>
           )}
           
-          {/* Information Box */}
           
-            
 
           <div className="form-group">
             <label htmlFor="name">Full Name *</label>
@@ -118,7 +111,7 @@ Query: ${formData.query}
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Enter your email"
+              placeholder="We'll reply to this email"
               required
               disabled={loading}
             />
@@ -153,7 +146,6 @@ Query: ${formData.query}
         </form>
       </div>
 
-      {/* Footbar at bottom */}
       <Footbar />
     </div>
   );
